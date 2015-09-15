@@ -1,0 +1,37 @@
+NETDIVE TAKES PRICE BACK
+
+14. July 2001, San Francisco, CA. NetDIVE (www.netdive.com) surprised
+developers this week by stating that no prizes will be awarded in their 20'000
+USD contest, after having announced and notified the winner the day before.
+
+One month after the official notification date, Netdive broke its silence
+about the result of their CMC International Java Contest. The winners should 
+have been announced on June 6th at Java One.
+
+"I hope submissions were no serious work with commercial potential", says one
+developer, pointing out that the contest rules stated "that Netdive would hold 
+ownership of all entries to quite some extent".
+
+"The lack of reply from NetDive was, for me, enough to notice the lack of
+seriousness of the contest" he says, and is lucky that he did not decide to
+submit his work. Other developers have tried over a month to get information 
+about their submission without success.
+
+Only after developers announced they would tell the press, Netdive stated that
+"one entry will be awarded the 3rd place prize". However, the next day the
+company took their prize back and said they "have found it necessary to 
+terminate the entire contest".
+
+Now developers world-wide feel that "Netdive's misbehaviour is a provocation
+and their explanations are arrogant and insulting" and hope the Internet 
+community will spread this message around the globe to "prevent further waste 
+of time for Netdive and the like".
+
+Netdive, who claims to be a market leading developer changed the contest
+website several times behind the scenes. Copies of the different versions
+are available:
+- http://n.ethz.ch/student/alderg/download/netdive1.zip
+- http://n.ethz.ch/student/alderg/download/netdive2.zip
+
+G. Alder (Switzerland), H. Hamam (Canada), M. Kollegov (Russia), C. Liu (USA),
+V. Marcinko (Croatia), J. C. de Oliveira (Canada), N. Stepan (Croatia)

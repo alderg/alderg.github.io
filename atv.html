@@ -1,0 +1,532 @@
+<!--
+  $Id: atv.html,v 1.1 2013-01-20 16:00:00 gaudenz Exp $
+  Copyright (c) 2013 by Gaudenz Alder
+  
+  See http://support.firecore.com/entries/21375902-3rd-party-control-api-aircontrol-beta
+  Keyboard typing based on https://gist.github.com/3104089
+  
+  URL Parameters:
+  - ip=IP_of_Apple_TV
+  - debug=1
+  
+  Click Type when focus is on keyboard in Apple TV to enter the text in the
+  input field. (Note: The edit mode must be set to lowercase alphabetic!)
+  Drag "." to generate repeated cursor events, click for select.
+-->
+<html>
+<head>
+	<title>Apple TV Remote</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.4">
+	<script type="text/javascript">
+		var urlParams = (function(url)
+		{
+			var result = new Object();
+			var idx = url.lastIndexOf('?');
+	
+			if (idx > 0)
+			{
+				var params = url.substring(idx + 1).split('&');
+				
+				for (var i = 0; i < params.length; i++)
+				{
+					idx = params[i].indexOf('=');
+					
+					if (idx > 0)
+					{
+						result[params[i].substring(0, idx)] = params[i].substring(idx + 1);
+					}
+				}
+			}
+			
+			return result;
+		})(window.location.href);
+
+		var chars = {'.': 36, '_': 37, '@': 38, '!': 0, '#': 2, '$': 3, '%': 4,
+			'%': 5, '~': 6, '*': 7, '\\': 8, '/': 9, '?': 10, '^': 11, '_': 12,
+			'`': 13, ';': 14, ':': 15, '|': 16, '=': 17, 'é': 18, 'n': 19,
+			'[': 20, ']': 21, '{': 22, '}': 23, 'ü': 25, ',': 27, '+': 28,
+			'-': 29, '<': 30, '>': 31, '(': 32, ')': 33, '\'': 34, '"': 35};
+
+		var debugInput = null;
+		var cmdMenu = 1;
+		var cmdMenuHold = 2;
+		var cmdUp = 3;
+		var cmdDown = 4;
+		var cmdSelect = 5;
+		var cmdLeft = 6;
+		var cmdRight = 7;
+		var cmdPlayPause = 10;
+		var cmdPause = 15;
+		var cmdPlay = 16;
+		var cmdStop = 17;
+		var cmdFastForward = 18;
+		var cmdRewind = 19;
+		var cmdChapterSkipForward = 20;
+		var cmdChapterSkipBackwards = 21;
+		var cmdList = 22;
+		
+		var delay = 0;
+		var mode = 0;
+		var setmode = 0;
+		var posX = 0;
+		var setposX = 0;
+		var posY = 0;
+		var setposY = 0;
+		
+		var ip = urlParams['ip'] || '192.168.0.21';
+		
+		function br(parent)
+		{
+			parent.appendChild(parent.ownerDocument.createElement('br'));
+		}
+		
+		function button(label, funct, doc)
+		{
+			doc = (doc != null) ? doc : document;
+			
+			var button = doc.createElement('div');
+			button.appendChild(doc.createTextNode(label));
+			button.style.display = 'inline-block';
+			button.style.backgroundColor = 'gray';
+			button.style.border = '1px solid black';
+			button.style.textAlign = 'center';
+			button.style.width = '60px';
+			button.style.height = '60px';
+
+			if (funct != null)
+			{
+				addListener(button, 'click', function(evt)
+				{
+					funct(evt);
+				});
+			}
+			
+			return button;
+		}
+	
+		function execute(cmd, counter, next)
+		{
+			counter = (counter != null) ? counter : 1;
+			
+			if (counter > 0)
+			{
+				// TODO: Find better solution for sending GET requests in sequence
+				// without causing warnings (images) or using the cache (js).
+				var frame = document.createElement('iframe');
+				frame.style.display = 'none';
+				document.body.appendChild(frame);	
+				
+				var onload = function()
+				{
+					frame.parentNode.removeChild(frame);
+					
+					var exec = function()
+					{
+						if (counter > 1)
+						{
+							execute(cmd, counter - 1, next);
+						}
+						else if (next != null)
+						{
+							next();
+						}	
+					};
+					
+					if (delay > 0)
+					{
+						window.setTimeout(exec, delay);
+					}
+					else
+					{
+						exec();
+					}
+				};
+				
+				if (debugInput != null)
+				{
+					// Debug output
+					debugInput.value += cmd + '\n';
+				}
+				else
+				{
+					addListener(frame, 'load', onload);
+					frame.src = cmd;
+				}
+			}
+			else if (next != null)
+			{
+				next();
+			}
+		}
+		
+		function executeSq(seq)
+		{
+			if (seq.length > 1)
+			{
+				var counter = seq.shift();
+				var cmd = seq.shift();
+				
+				execute('http://' +ip + '/remoteAction=' + cmd, counter, function()
+				{
+					executeSq(seq);
+				});
+			}
+		}
+		
+		function abspos(c)
+		{
+			var ord = c.charCodeAt(0);
+			var abs = 0;
+			setmode = 0;
+			
+			if (97 <= ord && ord <= 122)
+			{
+				abs = ord - 97; // a-z
+			}
+			else if (65 <= ord && ord <= 90)
+			{
+				abs = ord - 65; // A-Z
+				setmode = 1;
+			}
+			else if (ord == 48)
+			{
+				abs = 35; // 0
+			}
+			else if (49 <= ord && ord <= 90)
+			{
+				abs = ord - 23; // 1-9
+			}
+			else if (chars[c] != null)
+			{
+				setmode = 2;
+				abs = chars[c];
+			}
+			
+			setposX = abs % 6;
+			setposY = Math.floor(abs / 6);
+		}
+		
+		function repeat(n, cmd)
+		{
+			return [n, cmd];
+		}
+		
+		function one(cmd)
+		{
+			return [1, cmd];
+		}
+		
+		function pos(x, y)
+		{
+			var sq = [];
+			
+			if (posY > y)
+			{
+				sq = sq.concat(repeat(posY - y, cmdUp));
+			}
+			else if (posY < y)
+			{
+				sq = sq.concat(repeat(y - posY, cmdDown));
+			}
+			
+			posY = y;
+			
+			if (posX > x)
+			{
+				sq = sq.concat(repeat(posX - x, cmdLeft));
+			}
+			else if (posX < x)
+			{
+				sq = sq.concat(repeat(x - posX, cmdRight));
+			}
+			
+			posX = x;
+
+			return sq;
+		}
+		
+		function calibrate()
+		{
+			posX = 0;
+			posY = 6;
+			
+			return [7, cmdDown, 7, cmdLeft];
+		}
+		
+		function addGestureListeners(node, startListener, moveListener, endListener)
+		{
+			addListener(node, 'mousedown', startListener);
+			addListener(document.body, 'mousemove', moveListener);
+			addListener(document.body, 'mouseup', endListener);
+			
+			addListener(node, 'touchstart', startListener);
+			addListener(document.body, 'touchmove', moveListener);
+			addListener(document.body, 'touchend', endListener);
+		}
+		
+		function addListener(element, eventName, funct)
+		{
+			if (window.addEventListener)
+			{
+				element.addEventListener(eventName, funct, false);
+			}
+			else
+			{
+				element.attachEvent('on' + eventName, funct);
+			}
+		}
+		
+		function getMainEvent(e)
+		{
+			if ((e.type == 'touchstart' || e.type == 'touchmove') &&
+				e.touches != null && e.touches[0] != null)
+			{
+				e = e.touches[0];
+			}
+			else if (e.type == 'touchend' && e.changedTouches != null &&
+				e.changedTouches[0] != null)
+			{
+				e = e.changedTouches[0];
+			}
+			
+			return e;
+		}
+		
+		function getClientX(e)
+		{
+			return getMainEvent(e).clientX;
+		}
+
+		function getClientY(e)
+		{
+			return getMainEvent(e).clientY;
+		}
+		
+		function consume(evt, preventDefault, stopPropagation)
+		{
+			preventDefault = (preventDefault != null) ? preventDefault : true;
+			stopPropagation = (stopPropagation != null) ? stopPropagation : true;
+			
+			if (preventDefault)
+			{
+				if (evt.preventDefault)
+				{
+					if (stopPropagation)
+					{
+						evt.stopPropagation();
+					}
+					
+					evt.preventDefault();
+				}
+				else if (stopPropagation)
+				{
+					evt.cancelBubble = true;
+				}
+			}
+
+			// Opera
+			evt.isConsumed = true;
+
+			// Other browsers
+			evt.returnValue = false;
+		}
+		
+		function write(text)
+		{
+			// TODO: Find better solution for sending GET requests in sequence
+			// without causing warnings (images) or using the cache (js).
+			var sq = calibrate();
+			
+			for (var i = 0; i < text.length; i++)
+			{
+				if (text.charAt(i) == ' ')
+				{
+					sq = sq.concat(pos(0, 6)).concat(one(cmdSelect));
+				}
+				else
+				{
+					abspos(text.charAt(i));
+					
+					if (mode != setmode)
+					{
+						// Workaround for double play/pause button press for single GET request
+						sq = sq.concat(pos(0, 0)).concat(one(cmdUp)).concat(repeat(mode, cmdLeft)).
+							concat(repeat(setmode, cmdRight)).concat(one(cmdDown)).concat(repeat(6, cmdLeft));
+					}
+	
+					mode = setmode;
+					sq = sq.concat(pos(setposX, setposY)).concat(one(cmdSelect));
+				}
+			}
+			
+			// Moves cursor to delete position
+			executeSq(sq.concat(pos(0, 6)).concat(repeat(2, cmdRight)));
+		}
+
+		// Main
+		function main()
+		{
+			var input = document.createElement('input');
+			input.setAttribute('type', 'text');
+			input.setAttribute('x-webkit-speech', '');
+			input.value = 'Test';
+			document.body.appendChild(input);
+			
+			addListener(input, 'focus', function()
+			{
+				input.value = '';
+			});
+			br(document.body);
+			document.body.appendChild(button('Home', function(evt)
+			{
+				executeSq([1, cmdMenuHold]);
+				consume(evt);
+			}));
+			document.body.appendChild(button('^', function(evt)
+			{
+				executeSq([1, cmdUp]);
+				consume(evt);
+			}));
+			document.body.appendChild(button('Type', function(evt)
+			{
+				write(input.value);
+				consume(evt);
+			}));
+			br(document.body);
+			document.body.appendChild(button('<', function(evt)
+			{
+				executeSq([1, cmdLeft]);
+				consume(evt);
+			}));
+			var cursorButton = button('.', function(evt)
+			{
+				executeSq([1, cmdSelect]);
+				consume(evt);
+			})
+			document.body.appendChild(cursorButton);
+			document.body.appendChild(button('>', function(evt)
+			{
+				executeSq([1, cmdRight]);
+				consume(evt);
+			}));
+			br(document.body);
+			document.body.appendChild(button('Menu', function(evt)
+			{
+				executeSq([1, cmdMenu]);
+				consume(evt);
+			}));
+			document.body.appendChild(button('v', function(evt)
+			{
+				executeSq([1, cmdDown]);
+				consume(evt);
+			}));
+			document.body.appendChild(button('Play', function(evt)
+			{
+				executeSq([1, cmdPlayPause]);
+				consume(evt);
+			}));
+			br(document.body);
+			document.body.appendChild(button('|<<', function(evt)
+			{
+				executeSq([1, cmdChapterSkipBackwards]);
+				consume(evt);
+			}));
+			document.body.appendChild(button('List', function(evt)
+			{
+				executeSq([1, cmdList]);
+				consume(evt);
+			}));
+			document.body.appendChild(button('>>|', function(evt)
+			{
+				executeSq([1, cmdChapterSkipForward]);
+				consume(evt);
+			}));
+			
+			if (urlParams['debug'] == '1')
+			{
+				br(document.body);
+				debugInput = document.createElement('textarea');
+				debugInput.setAttribute('cols', '20');
+				debugInput.setAttribute('rows', '5');
+				document.body.appendChild(debugInput);
+			}
+			
+			// Adds move gesture
+			var thresh = 20;
+			var mouseX = 0;
+			var mouseY = 0;
+			var active = false;
+			
+			function activate(x, y)
+			{
+				mouseX = x;
+				mouseY = y;
+				cursorButton.style.backgroundColor = 'green';
+				active = true;
+			}
+			
+			addGestureListeners(cursorButton, function(evt)
+			{
+				var source = (evt.srcElement != null) ? evt.srcElement : evt.target;
+				
+				if (source == cursorButton)
+				{
+					activate(getClientX(evt), getClientY(evt));
+					consume(evt);
+				}
+			},
+			function(evt)
+			{
+				if (active)
+				{
+					var tmpX = getClientX(evt);
+					var tmpY =  getClientY(evt);
+
+					if (mouseY < tmpY - thresh)
+					{
+						mouseY = tmpY;
+						executeSq([1, cmdDown]);
+					}
+					else if (mouseY > tmpY + thresh)
+					{
+						mouseY = tmpY;
+						executeSq([1, cmdUp]);
+					}
+					
+					if (mouseX < tmpX - thresh)
+					{
+						mouseX = tmpX;
+						executeSq([1, cmdRight]);
+					}
+					else if (mouseX > tmpX + thresh)
+					{
+						mouseX = tmpX;
+						executeSq([1, cmdLeft]);
+					}
+					
+					consume(evt);
+				}
+			},
+			function(evt)
+			{
+				if (active)
+				{
+					var tmpX = getClientX(evt);
+					var tmpY =  getClientY(evt);
+
+					if (Math.abs(mouseX - tmpX) < thresh / 3 && Math.abs(mouseY - tmpY) < thresh / 3)
+					{
+						executeSq([1, cmdSelect]);
+					}
+					
+					cursorButton.style.backgroundColor = 'gray';
+					active = false;
+					consume(evt);
+				}
+			});
+		};
+	</script>
+</head>
+<body onload="main()" style="background-color:black;color:white;">
+</body>
+</html>

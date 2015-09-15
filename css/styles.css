@@ -1,0 +1,43 @@
+body {font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#000066;margin:10px;}
+td.calendarHeader {font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#888888;margin:10px;}
+td.smallCalendarHeader {font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#888888;margin:10px;align:center;}
+td.calendar {border:solid;border-width:0px;border-color:white;}
+td.calendarToday {border:solid;border-width:1px;border-color:red;}
+font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:bold;color:red;margin:10px;align:center;}
+td {padding:0px;vertical-align:top;font-size:12px;border-width:1px;border-color:#000066;}
+td.pageframe {background-color:#111166;color:white;}
+td.sidebar {width:100px;background-color:lightgray;padding-left:10px;padding-right:5px;padding-top:0px;}
+td.columnspacer {width:3px;align:center;background-image:url('/images/bluepixel.gif');background-repeat:repeat-y;margin:0px;padding:0px;}
+.small {font-size:11px;}
+.titlebar {background-color:#EEEEEE;border:solid;border-width:1px;border-color:#000066;margin:2px;padding:2px;font-size:11px;}
+.box {background-color:#EEEEEE;border:solid;border-width:1px;border-color:#000066;margin:10px;padding:5px;font-size:11px;}
+.simplebox {background-color:#EEEEEE;align:center;border:solid;border-width:1px;border-color:#000066;margin:10px;padding:5px;font-size:11px;}
+form {border:none;border-width:1px;border-color:#000066;margin:0px;padding:5px;}
+form.box {background-color:#EEEEEE;border:solid;border-width:1px;border-color:#000066;margin:0px;padding:5px;}
+input, select, textarea, button {font-family:Arial,Helvetica,sans-serif;font-size:11px;background-color:#FBFBFF;margin-right:6px;}
+.source {font-family:courier;font-size:12px;background-color:#DDDDDD;border:solid;border-width:1px;border-color:#000000;margin:10px;padding:5px;}
+h1 {font-size:15px;font-weight:bold;margin-top:5px;margin-bottom:6px;margin-left:0px;margin-right:0px;padding-top:0px;padding-bottom:0px;padding-left:0px;padding-right:0px;}
+h2 {font-size:13px;font-weight:bold;margin-top:10px;margin-bottom:4px;margin-left:0px;margin-right:0px;padding-top:0px;padding-bottom:0px;padding-left:0px;padding-right:0px;}
+h3 {font-size:12px;font-weight:bold;margin-top:8px;margin-bottom:0px;margin-left:0px;margin-right:0px;padding-top:0px;padding-bottom:0px;padding-left:0px;padding-right:0px;}
+h4 {font-size:11px;font-weight:bold;margin-top:8px;margin-bottom:0px;margin-left:0px;margin-right:0px;padding-top:0px;padding-bottom:0px;padding-left:0px;padding-right:0px;}
+.hd1 {font-size:18px;font-weight:bold;margin-top:5px;margin-bottom:10px;margin-left:0px;margin-right:0px;padding-top:0px;padding-bottom:0px;padding-left:0px;padding-right:0px;}
+.hd2 {font-size:14px;font-weight:bold;margin-top:5px;margin-bottom:5px;margin-left:0px;margin-right:0px;padding-top:0px;padding-bottom:0px;padding-left:0px;padding-right:0px;}
+.hd3 {font-size:12px;font-weight:bold;margin-top:5px;margin-bottom:0px;margin-left:0px;margin-right:0px;padding-top:0px;padding-bottom:0px;padding-left:0px;padding-right:0px;}
+p {margin-top:5px;margin-bottom:5px;margin-left:5px;margin-right:5px;padding-top:0px;padding-bottom:0px;padding-left:0px;padding-right:0px;}
+p.footer {font-size:11px;color:#A0A0BB;vertical-align:bottom;text-align:center;}
+ul {list-style:lower-roman inside;list-style-type:roman;margin-top:5px;margin-bottom:5px;margin-left:5px;margin-right:5px;padding-left:10px;}
+a.boxlink:link {font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#0000FF;font-weight:normal;}
+a.boxlink:visited {color:#000066;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#0000FF;font-weight:normal;}
+a.boxlink:hover {font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#0000FF;font-weight:normal;}
+a.quicklink:link {color:white;text-decoration:none;font-weight:normal;}
+a.quicklink:visited {color:white;text-decoration:none;font-weight:normal;}
+a.quicklink:hover {color:white;text-decoration:none;font-weight:normal;}
+a.nav1:link {color:#000066;text-decoration:none;font-weight:normal;}
+a.nav1:visited {color:#000066;text-decoration:none;font-weight:normal;}
+a.nav1:hover {color:#000066;background-color:#CCCCCC;text-decoration:none;font-weight:normal;}
+a.nav2:link {font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:normal;}
+a.nav2:visited {font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:normal;}
+a.nav2:hover {font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:normal;}
+a:link {font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#0000FF;font-weight:normal;}
+a:visited {font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#0000FF;font-weight:normal;}
+a:hover {font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#0000FF;font-weight:normal;}

@@ -51,7 +51,7 @@
 				iframe.contentWindow.postMessage(JSON.stringify(
 				{
 					action: 'spinner',
-					message: 'Saving...',
+					message: 'Saving',
 					show: 1
 				}), '*');
 				
@@ -122,7 +122,7 @@
 							// Additional export step required for PNG, SVG and HTML
 							iframe.contentWindow.postMessage(JSON.stringify(
 							{
-								spin: 'Saving...',
+								spin: 'Saving',
 								action: 'export',
 								format: (/(\.html)$/i.test(path)) ? 'html' : 'xml' + ext,
 								xml: msg.xml

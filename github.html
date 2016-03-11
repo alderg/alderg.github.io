@@ -67,7 +67,7 @@
 					{
 						close();
 					}
-				});
+				}, iframe);
 			};
 
 			var receive = function(evt)
@@ -187,14 +187,21 @@
 				button.innerHTML = prev;
 				
 				var obj = JSON.parse(req.responseText);
+				var filename = path;
+				var slash = filename.lastIndexOf('/');
+				
+				if (slash >= 0)
+				{
+					filename = filename.substring(slash + 1);
+				}
 			
 				if (req.status == 200 || req.status == 404)
 				{
-					edit(path, obj.content, function(data, fn)
+					edit(path, obj.content, function(data, fn, iframe)
 					{
-						var msg = prompt('Commit Message', 'Update ' + obj.name);
-		
-						writeFile(url, path, obj.sha, msg, data, fn);
+						var msg = prompt('Commit Message', 'Update ' + filename);
+						
+						writeFile(url, path, obj.sha, msg || '', data, fn);
 					});
 				}
 				else

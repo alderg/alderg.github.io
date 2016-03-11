@@ -192,7 +192,7 @@
 				{
 					edit(path, obj.content, function(data, fn)
 					{
-						var msg = prompt('Commit Message', '<Commit Message>');
+						var msg = prompt('Commit Message', 'Update ' + obj.name);
 		
 						writeFile(url, path, obj.sha, msg, data, fn);
 					});

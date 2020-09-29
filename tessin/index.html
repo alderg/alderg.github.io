@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Casa Neda | Ferienhaus im Tessin</title>
+<link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">
+<link href="css/bootstrap.css" type="text/css" rel="stylesheet" media="all">
+<link href="css/style.css" type="text/css" rel="stylesheet" media="all">
+<!-- Custom Theme files -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="Casa Neda Bedigliora Ticino Holiday Rental Malcantone Ferienhaus Lugano Tessin Casa Wernli" />
+<script type="application/x-javascript">addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<!-- //Custom Theme files -->
+<!-- js -->
+<script src="js/jquery-1.11.1.min.js"></script>
+<script src="js/modernizr.custom.js"></script>
+<!-- //js -->
+<!-- start-smoth-scrolling-->
+<script type="text/javascript" src="js/move-top.js"></script>
+<script type="text/javascript" src="js/easing.js"></script>
+<script type="text/javascript">
+		jQuery(document).ready(function($) {
+			$(".scroll").click(function(event){
+				event.preventDefault();
+				$('html,body').animate({scrollTop:$(this.hash).offset().top},1000);
+			});
+		});
+</script>
+<!--//end-smoth-scrolling-->
+<!--animate-->
+<link href="css/animate.css" rel="stylesheet" type="text/css" media="all">
+<script src="js/wow.min.js"></script>
+	<script>
+		 new WOW().init();
+	</script>
+<!--//end-animate-->
+	<script src="js/responsiveslides.min.js"></script>
+	<script>
+		// Lazy loading of fonts to fix slow page rendering delay on iOS
+		function loadFonts()
+		{
+			var style = document.createElement('style')
+			style.type = 'text/css'
+			style.innerHTML = "@font-face { font-family: 'Roboto-Regular'; src: url(fonts/Roboto-Regular.ttf) format('truetype'); }" +
+				"@font-face { font-family: 'Marvel-Regular'; src: url(fonts/Marvel-Regular.ttf) format('truetype'); }" +
+				".title h3 { font-weight: 700; transform: scale(1); -webkit-transform: scale(1);" +
+				"-moz-transform: scale(1); -o-transform: scale(1); -ms-transform: scale(1); opacity:1;}";
+			document.getElementsByTagName('head')[0].appendChild(style)
+		};
+		// Lazy loading for banner images for faster initial page rendering
+		function loadSlideshow()
+		{
+			window.setTimeout(function()
+			{
+				var imgs = ['1', '2', '11', '3', '4', '5', '6', '7', '8', '9', '10',
+					'12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22'];
+				var slider = document.getElementById('slider3');
+				var items = slider.getElementsByTagName('li');
+				var loadedImages = [];
+				var complete = false;
+				var idx = 0;
+
+				for (var i = 0; i < imgs.length - 1; i++)
+				{
+					var elt = items[0].cloneNode(true);
+					elt.style.display = 'none';
+					slider.appendChild(elt);
+				}
+
+				function onImageLoad()
+				{
+					loadedImages[idx] = 'images/banner' + imgs[idx] + '.jpg';
+					idx++;
+					addImage();
+				};
+
+				function addImage()
+				{
+					if (idx < imgs.length)
+					{
+						var img = new Image();
+
+						img.onload = onImageLoad;
+						img.onerror = onImageLoad;
+						img.src = 'images/banner' + imgs[idx] + '.jpg';
+					}
+				};
+
+				addImage();
+
+				// You can also use "$(window).load(function() {"
+				$(function () {
+				// Slideshow 3
+					$("#slider3").responsiveSlides({
+					auto: true,
+					pager:false,
+					nav:true,
+					speed: 500,
+					namespace: "callbacks",
+					before: function () {
+						if (!complete && loadedImages.length > 0)
+						{
+							for (var i = 0; i < items.length; i++)
+							{
+								var div = items[i].getElementsByTagName('div')[0];
+								div.style.backgroundImage = 'url(' + loadedImages[i % loadedImages.length] + ')';
+							}
+
+							complete = loadedImages.length == items.length;
+						}
+					},
+					after: function () {
+
+
+					}
+					});
+				});
+			}, 1000);
+		};
+	</script>
+</head>
+<body onload="loadFonts();loadSlideshow();">
+	<!--banner-->
+	<div class="banner">
+		<!--header-->
+		<div class="banner-text">
+			<div class="logo">
+				<a href="index.html"><img src="images/logo.png" alt=""/></a>
+			</div>
+			<div class="top-nav">
+				<ul class="nav1 cl-effect-1">
+					<li><a href="#about" class="scroll">Casa Neda</a></li>
+					<li><a href="#ferienhaus" class="scroll">Ferienhaus</a></li>
+					<li><a href="#umgebung" class="scroll">Umgebung</a></li>
+					<li><a href="#entdecken" class="scroll">Entdecken</a></li>
+					<li><a href="#aufenthalt" class="scroll">Aufenthalt</a></li>
+				</ul>
+			</div>
+		</div>
+		<div id="top" class="callbacks_container">
+			<ul class="rslides" id="slider3">
+				<li>
+					<div class="banner1" style="background-image:url(images/banner1.jpg);">
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<!--//banner-->
+	<!--about-->
+	<div class="about" id="about">
+		<div class="container">
+			<div class="title">
+				<h3>Casa Neda</h3>
+				<p>Aussicht und atemberaubende Natur – soweit das Auge reicht!</p>
+				<p style="white-space:nowrap;">
+				<a href="tipps.pdf" target="_blank">[ Tipps ]</a>
+				&nbsp;<a href="https://photos.google.com/share/AF1QipNU2rBsX8_k6QZ4fJKXHxpCuFTO8BkurdjjOHzw13_QbUdKk4KNCGuuoNwb9OWTsw/photo/AF1QipNCwJ2REYq8viWGuZF_jxFGdmJBEO8DH48DS-Dl?key=anZlZVF1WDVfVnpjWWlrbTdHUzhjcWktX1gzbkZB" target="_blank">[ Video ]</a>
+				&nbsp;<a href="tour.html" target="_blank">[ Tour ]</a>
+				&nbsp;<a href="https://goo.gl/photos/AEXGHz3Rd1emdrfz5" target="_blank">[ Galerie ]</a>
+			</div>
+			<div class="about-grids">
+				<div class="col-md-6 about-info wow fadeInLeft animated" data-wow-delay="0.5s" style="visibility: visible; -webkit-animation-delay: 0.5s;">
+					<h4>Tessiner Bilderbuchlandschaft</h4>
+					<p>Eine Naturstrasse führt zur Casa Neda ausserhalb des pittoresken Dorfes Bedigliora. Hier,
+					versteckt in einem Weinberg, geniessen Sie absolute Ruhe und Privatsphäre. Die Aussicht vom
+					sonnigen Areal ist phantastisch: Kleine Bergdörfer mit den typischen Steinhäusern, historischen
+					Kirchen und engen Gassen, die sanfte Hügellandschaft mit den ortstypischen Kastanienwäldern, die
+					schneebedeckten Alpen... und erst die spektakulären Sonnenuntergänge!</p>
+					<ul>
+						<li><a style="color:#337ab7;" href="https://map.geo.admin.ch/?lang=en&topic=ech&bgLayer=ch.swisstopo.pixelkarte-farbe&layers=ch.swisstopo.zeitreihen,ch.bfs.gebaeude_wohnungs_register,ch.bav.haltestellen-oev,ch.swisstopo.swisstlm3d-wanderwege,ch.swisstopo.swissnames3d&layers_visibility=false,false,false,false,true&layers_timestamp=18641231,,,,&lon=8.83525&lat=46.00022&elevation=902&heading=360.000&pitch=-40.007" target="_blank">Grosses Grundstück, sonnige Panorama-Lage</a></li>
+						<li><a style="color:#337ab7;" href="http://www.myswitzerland.com/de-ch/malcantone-caslano.html" target="_blank">Sanfter Tourismus und mildes Klima</a></li>
+						<li><a style="color:#337ab7;" href="https://www.google.ch/maps/@46.0026349,8.8373178,3a,68.3y,227.77h,81.11t/data=!3m6!1e1!3m4!1s3RSCHhxQ40cBUV1m66rxMA!2e0!7i13312!8i6656" target="_blank">Wildromantische Landschaft</a></li>
+					</ul>
+				</div>
+				<div class="col-md-6 about-info wow fadeInRight animated" data-wow-delay="0.5s" style="visibility: visible; -webkit-animation-delay: 0.5s;">
+					<a target="_blank" href="https://photos.google.com/share/AF1QipNU2rBsX8_k6QZ4fJKXHxpCuFTO8BkurdjjOHzw13_QbUdKk4KNCGuuoNwb9OWTsw/photo/AF1QipNCwJ2REYq8viWGuZF_jxFGdmJBEO8DH48DS-Dl?key=anZlZVF1WDVfVnpjWWlrbTdHUzhjcWktX1gzbkZB"><img src="images/house-outside.jpg" title="Video" alt="Video"/>
+					<center><small style="color:#14B9D5;font-style:italic;">Klicke hier für ein Video.</small></center></a>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+		<div class="container">
+			<div class="about-grids">
+				<div class="col-md-6 about-info wow fadeInLeft animated" data-wow-delay="0.5s" style="visibility: visible; -webkit-animation-delay: 0.5s;">
+					<h4>Südländische Lebensfreude –<br>Swiss Made</h4>
+					<p>Das Haus aus den 70er-Jahren mit eigenwilliger Architektur ist auf zwei Etagen angelegt:
+Auf der oberen Ebene liegen der Eingangsbereich, ein grosser Wohnraum mit offener Küche und
+Cheminée, ein Schlafzimmer und ein erstes Bad. Unten befinden sich ein zusätzlicher Wohnraum
+inklusive Schlafgelegenheit, ein weiteres Schlafzimmer und ein WC mit Dusche. Dank
+Süd-West-Ausrichtung und grossen Fenstern sind alle Räume lichtdurchflutet und sonnenverwöhnt.</p>
+					<ul>
+						<li><a style="color:#337ab7;" href="https://photos.google.com/share/AF1QipNU2rBsX8_k6QZ4fJKXHxpCuFTO8BkurdjjOHzw13_QbUdKk4KNCGuuoNwb9OWTsw/photo/AF1QipNS1iK_8CXFjzsyZ-EWcMlk7LhNYEapLTl90-qL?key=anZlZVF1WDVfVnpjWWlrbTdHUzhjcWktX1gzbkZB" target="_blank">Küche, Heizung, Waschmaschine</a></li>
+						<li><a style="color:#337ab7;" href="https://photos.google.com/share/AF1QipNU2rBsX8_k6QZ4fJKXHxpCuFTO8BkurdjjOHzw13_QbUdKk4KNCGuuoNwb9OWTsw/photo/AF1QipOCW7kuHMFk9gl5B4CFhsFsQEVRhx0DkFyR10Ok?key=anZlZVF1WDVfVnpjWWlrbTdHUzhjcWktX1gzbkZB" target="_blank">Zwei Sitzplätze, Cheminée, Grill</a></li>
+						<li><a style="color:#337ab7;" href="https://www.salt.ch/en/outages/?search=6981&country=ch" target="_blank">Internet, WLAN</a></li>
+					</ul>
+				</div>
+				<div class="col-md-6 about-info wow fadeInRight animated" data-wow-delay="0.5s" style="visibility: visible; -webkit-animation-delay: 0.5s;">
+					<a target="_blank" href="tour.html"><img src="images/house-inside.jpg" title="360° Tour" alt="360° Tour"/>
+					<center><small style="color:#14B9D5;font-style:italic;">Klicke hier für eine 360° Tour.</small></center></a></a>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+	</div>
+	<!--//about-->
+	<!--services-->
+	<div class="services" id="ferienhaus">
+		<div class="container">
+			<div class="title">
+				<h3>Spektakuläres Panorama Ferienhaus</h3>
+				<p>Das kontinuierlich renovierte Haus entspricht heutigen Ansprüchen punkto Komfort und
+				Energiestandards (Thermofenster, Wärmepumpe etc).</p>
+				<small style="color:#14B9D5;font-style:italic;">Klicke auf die Symbole für Details.</small>
+			</div>
+			<div class="service-grids">
+				<div class="col-md-4 srvc-grids-info wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+					<div class="srvc-img" style="cursor:pointer;" onclick="window.open('https://photos.google.com/share/AF1QipNU2rBsX8_k6QZ4fJKXHxpCuFTO8BkurdjjOHzw13_QbUdKk4KNCGuuoNwb9OWTsw/photo/AF1QipPENjbZtD4CcGUR3RBT-ZejbzpK6LCGDxtNGvTX?key=anZlZVF1WDVfVnpjWWlrbTdHUzhjcWktX1gzbkZB');">
+						<img src="images/house.png" alt=""/>
+					</div>
+					<h5>Zimmer</h5>
+					<p>4 (2 Schlafzimmer)</p>
+				</div>
+				<div class="col-md-4 srvc-grids-info wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+					<div class="srvc-img" style="cursor:pointer;" onclick="window.open('https://photos.google.com/share/AF1QipNU2rBsX8_k6QZ4fJKXHxpCuFTO8BkurdjjOHzw13_QbUdKk4KNCGuuoNwb9OWTsw/photo/AF1QipMjyY7OP-16K4eNPstXIj2_BW_TJYagflZPPn8Q?key=anZlZVF1WDVfVnpjWWlrbTdHUzhjcWktX1gzbkZB');">
+						<img src="images/bed.png" alt=""/>
+					</div>
+					<h5>Betten</h5>
+					<p>5 (1 grosses Bettsofa)</p>
+				</div>
+				<div class="col-md-4 srvc-grids-info wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+					<div class="srvc-img" style="cursor:pointer;" onclick="window.open('https://photos.google.com/share/AF1QipNU2rBsX8_k6QZ4fJKXHxpCuFTO8BkurdjjOHzw13_QbUdKk4KNCGuuoNwb9OWTsw/photo/AF1QipMe0X4oGr8x3THt1BEDog8aMdU9_Vjw3jEBF6Vs?key=anZlZVF1WDVfVnpjWWlrbTdHUzhjcWktX1gzbkZB');">
+						<img src="images/shower.png" alt=""/>
+					</div>
+					<h5>Badezimmer</h5>
+					<p>2 (WC-BAD/WC-DU)</p>
+				</div>
+				<div class="col-md-4 srvc-grids-info wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+					<div class="srvc-img" style="cursor:pointer;" onclick="window.open('tour.html');">
+						<img src="images/travel.png" alt=""/>
+					</div>
+					<h5>Personen</h5>
+					<p>4 (bis maximal 6)</p>
+				</div>
+				<div class="col-md-4 srvc-grids-info wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+					<div class="srvc-img" style="cursor:pointer;" onclick="window.open('https://photos.google.com/share/AF1QipNU2rBsX8_k6QZ4fJKXHxpCuFTO8BkurdjjOHzw13_QbUdKk4KNCGuuoNwb9OWTsw/photo/AF1QipN6ks1Zo3goqGQrSqGnLaJNoU0PSc-mPy7qyLVD?key=anZlZVF1WDVfVnpjWWlrbTdHUzhjcWktX1gzbkZB');">
+						<img src="images/car.png" alt=""/>
+					</div>
+					<h5>Parkplätze</h5>
+					<p>2 - 3</p>
+				</div>
+				<div class="col-md-4 srvc-grids-info wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+					<div class="srvc-img" style="cursor:pointer;" onclick="window.open('https://photos.google.com/share/AF1QipNU2rBsX8_k6QZ4fJKXHxpCuFTO8BkurdjjOHzw13_QbUdKk4KNCGuuoNwb9OWTsw/photo/AF1QipNA2ZZL2mZKKsW0gGCGi-tLzpti6cYJQW_n8D05?key=anZlZVF1WDVfVnpjWWlrbTdHUzhjcWktX1gzbkZB');">
+						<img src="images/maple.png" alt=""/>
+					</div>
+					<h5>Grundstück</h5>
+					<p>~4'000 m<sup>2</sup> (110 m<sup>2</sup> Wohnfläche)</p>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+	</div>
+	<!--//services-->
+	<div class="slid">
+		<div class="container">
+			<div class="wow fadeInRight animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+				<h3>„Hier scheint die Sonne inniger und die Berge sind röter, hier wächst Kastanie und Wein, Mandel und Feigen, die Menschen sind gut, gesittet und freundlich.“ (Hermann Hesse, 1949)</h3>
+			</div>
+		</div>
+	</div>
+	<!--products-->
+		<!--team-->
+	<div class="team" id="umgebung">
+		<div class="container">
+			<div class="title">
+				<h3>Schweiz pur – ganz offiziell...</h3>
+				<p>Bedigliora liegt im Bezirk Lugano auf rund 600 m Höhe über Meer im Herzen des Malcantone. Das
+Klima ist das ganze Jahr sehr mild. Der Ort ist mit dem Postauto an den öffentlichen Verkehr angeschlossen.
+In knapp 10 Minuten sind Sie im Touristenort Caslano am Luganersee mit vielfältigen
+Einkaufsmöglichkeiten und Strandbad.</p>
+<p>
+Die dicht bewachsene Hügellandschaft zieht sich vom Golf von Agno am Luganersee bis zum
+Monte Lema (1620 m) hinauf. Schmale Bergstrassen und ausgedehnte Kastanienwälder prägen die
+Region und machen sie zum wahren Paradies für Wanderer und Biker! Die Region Malcantone ist
+Träger von «Schweiz pur», eine von Schweiz Tourismus verliehene Auszeichnung für sanften Tourismus.
+</p>
+<p>
+Die nahen Freizeitdestinationen sind so zahlreich wie vielseitig. Das Wanderparadies rund um den
+Monte Lema an der Grenze zu Italien bietet fantastische Aussicht auf den Luganer- und Langensee,
+Mailand und die Schweizer Alpen. Wer es zeitweise exklusiver und mondäner mag, kommt beispielsweise im nahen Lugano voll auf seine Rechnung.
+ </p>
+			</div>
+			<!-- flex-slider -->
+			<div class="work-bottom">
+				<div class="nbs-flexisel-container"><div class="nbs-flexisel-inner"><ul id="flexiselDemo1" class="nbs-flexisel-ul" style="left: -285px; display: block;">
+					<li class="nbs-flexisel-item" style="width: 285px;">
+						<div class="team-left">
+							<img src="images/novaggio.jpg" alt="">
+							<div class="team-bottom">
+								<h4>Novaggio (CH)</h4>
+								<p>5 Autominuten</p>
+							</div>
+						</div>
+					</li>
+					<li class="nbs-flexisel-item" style="width: 285px;">
+						<div class="team-left">
+							<img src="images/pontetresa.jpg" alt="">
+							<div class="team-bottom">
+								<h4>Ponte Tresa (CH/IT)</h4>
+								<p>15 Autominuten</p>
+							</div>
+						</div>
+					</li>
+					<li class="nbs-flexisel-item" style="width: 285px;">
+						<div class="team-left">
+							<img src="images/caslano.jpg" alt="">
+							<div class="team-bottom">
+								<h4>Caslano (CH)</h4>
+								<p>15 Autominuten</p>
+							</div>
+						</div>
+					</li>
+					<li class="nbs-flexisel-item" style="width: 285px;">
+						<div class="team-left">
+							<img src="images/lugano.jpg" alt="">
+							<div class="team-bottom">
+								<h4>Lugano (CH)</h4>
+								<p>30 Autominuten</p>
+							</div>
+						</div>
+					</li>
+
+					<li class="nbs-flexisel-item" style="width: 285px;">
+						<div class="team-left">
+							<img src="images/luino.jpg" alt="">
+							<div class="team-bottom">
+								<h4>Luino (IT)</h4>
+								<p>25 Autominuten</p>
+							</div>
+						</div>
+					</li>
+					<li class="nbs-flexisel-item" style="width: 285px;">
+						<div class="team-left">
+							<img src="images/varese.jpg" alt="">
+							<div class="team-bottom">
+								<h4>Varese (IT)</h4>
+								<p>45 Autominuten</p>
+							</div>
+						</div>
+					</li>
+					<li class="nbs-flexisel-item" style="width: 285px;">
+						<div class="team-left">
+							<img src="images/como.jpg" alt="">
+							<div class="team-bottom">
+								<h4>Como (IT)</h4>
+								<p>60 Autominuten</p>
+							</div>
+						</div>
+					</li>
+				</ul>
+				<div class="nbs-flexisel-nav-left" style="top: 138px;"></div><div class="nbs-flexisel-nav-right" style="top: 138px;"></div></div></div>
+					<script type="text/javascript">
+							$(window).load(function() {
+								$("#flexiselDemo1").flexisel({
+									visibleItems: 4,
+									animationSpeed: 1000,
+									autoPlay: true,
+									autoPlaySpeed: 3000,
+									pauseOnHover: true,
+									enableResponsiveBreakpoints: true,
+									responsiveBreakpoints: {
+										portrait: {
+											changePoint:480,
+											visibleItems: 2
+										},
+										landscape: {
+											changePoint:640,
+											visibleItems: 3
+										},
+										tablet: {
+											changePoint:768,
+											visibleItems: 3
+										}
+									}
+								});
+
+							});
+					</script>
+					<script type="text/javascript" src="js/jquery.flexisel.js"></script>
+					<!-- //flex-slider -->
+			</div>
+		</div>
+	</div>
+	<!--//team-->
+	<div class="features" id="entdecken">
+		<div class="container">
+			<div class="title">
+				<h3>Dolce far' niente oder Aktivurlaub</h3>
+				<p>Dank des milden Klimas hält man sich im Tessin oft im Freien auf. Zwei
+Sitzplätze mit passendem Mobiliar und Pergola erweitern die Wohn- und Aufenthaltsbereiche an schönen
+Tagen. Von hier geniessen Sie das einzigartige Panorama mit der bewaldeten
+Hügellandschaft, malerischen Dörfern und den schneebedeckten
+Alpen mit dem majestätischen Monte Rosa in weiter Ferne.</p>
+<p>
+Sonnenuntergänge, Sternenhimmel, Kaminfeuer... erholsames Dolce far' niente oder sportlicher
+Aktivurlaub... Merlot und Risotto im nahen Grotto oder Sehen- und Gesehenwerden in den mondänen
+Touristendestinationen: Die Casa Neda ist Ihr ruhiges Refugium und idealer
+Ausgangspunkt für abwechslungsreiche Abenteuer.</p>
+			</div>
+			<div class="features-info">
+				<div class="col-md-4 features-grids wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+					<figure onclick="window.open('http://www.montelema.ch/');" class="effect-bubba">
+						<img src="images/montelema.jpg" alt=""/>
+						<figcaption>
+							<h4>Aussichtspunkte</h4>
+							<p>Mt. Lema, Mt. Generoso</p>
+						</figcaption>
+					</figure>
+				</div>
+				<div class="col-md-4 features-grids wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+					<figure onclick="window.open('http://www.myswitzerland.com/de-ch/sentiero-in-cresta-monte-lema-monte-tamaro.html');" class="effect-bubba">
+						<img src="images/traversata.jpg" alt=""/>
+						<figcaption>
+							<h4>Wandern & Sport</h4>
+							<p>Traversata, Tamaropark</p>
+						</figcaption>
+					</figure>
+				</div>
+				<div class="col-md-4 features-grids wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+					<figure onclick="window.open('http://www.ticinoweekend.ch/lugano/schiff-luganersee-cantine-gandria-zollmuseum/');" class="effect-bubba">
+						<img src="images/gandria.jpg" alt=""/>
+						<figcaption>
+							<h4>Ausflüge</h4>
+							<p>Gandria, Morcote</p>
+						</figcaption>
+					</figure>
+				</div>
+				<div class="col-md-4 features-grids wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+					<figure onclick="window.open('https://www.zooalmaglio.ch/deutsch/');" class="effect-bubba">
+						<img src="images/zoo.jpg" alt=""/>
+						<figcaption>
+							<h4>Parks & Erholung</h4>
+							<p><small>Zoo al Maglio, Parco San Grato</small></p>
+						</figcaption>
+					</figure>
+				</div>
+				<div class="col-md-4 features-grids wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+					<figure onclick="window.open('http://www.ticinotopten.ch/de/museen/museum-hesse-montagnola');" class="effect-bubba">
+						<img src="images/montagnola.jpg" alt=""/>
+						<figcaption>
+							<h4>Kunst & Kultur</h4>
+							<p>Montagnola, Alpe Foppa</p>
+						</figcaption>
+					</figure>
+				</div>
+				<div class="col-md-4 features-grids wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">
+					<figure onclick="window.open('http://www.ticino.ch/de/commons/details/Markt-von-Luino-Italien-/2911.html');" class="effect-bubba">
+						<img src="images/mercato.jpg" alt=""/>
+						<figcaption>
+							<h4>Märkte & Shopping</h4>
+							<p><small>Luino, Ponte Tresa, Lugano</small></p>
+						</figcaption>
+					</figure>
+				</div>
+				<div class="clearfix"> </div>
+				<center><small style="color:#14B9D5;font-style:italic;">Klicke auf die Bilder für Ausflugstipps.</small></center>
+			</div>
+		</div>
+	</div>
+	<!--//products-->
+	<!--contact-->
+	<div class="contact" id="aufenthalt">
+		<div class="container">
+			<div class="title">
+				<h3>Aufenthalt</h3>
+				<p>Via Néda 6, 6981 Bedigliora</p>
+			</div>
+			<div class="contact-grids">
+				<div class="col-md-4 address wow fadeInLeft animated" data-wow-delay="0.5s" style="visibility: visible; -webkit-animation-delay: 0.5s;">
+					<h4>Fahren</h4>
+					<p><a style="color:#337ab7;" href="https://timetable.search.ch/Bedigliora,Paese" target="_blank">Postauto</a></p>
+					<p><a style="color:#337ab7;" href="https://photos.google.com/share/AF1QipNU2rBsX8_k6QZ4fJKXHxpCuFTO8BkurdjjOHzw13_QbUdKk4KNCGuuoNwb9OWTsw/photo/AF1QipPCgpltOnNGlWMdz2mPNWMhjFQLc-jvhCnVo9g2?key=anZlZVF1WDVfVnpjWWlrbTdHUzhjcWktX1gzbkZB" target="_blank">Auto</a></p>
+				</div>
+				<div class="col-md-4 address wow fadeInLeft animated" data-wow-delay="0.5s" style="visibility: visible; -webkit-animation-delay: 0.5s;">
+					<h4>Karte</h4>
+					<p><a style="color:#337ab7;" href="https://www.google.com/maps/dir/46.0043296,8.8363121" target="_blank">Google Maps</a></p>
+					<p><a style="color:#337ab7;" href="http://map.search.ch/Bedigliora,Via-N%C3%A9da-6?z=512" target="_blank">Map Search</a></p>
+				</div>
+				<div class="col-md-4 address wow fadeInLeft animated" data-wow-delay="0.5s" style="visibility: visible; -webkit-animation-delay: 0.5s;">
+					<h4>Aktuell</h4>
+					<p><a style="color:#337ab7;" href="https://en.swisswebcams.ch/webcam/zoom/1545729503" target="_blank">Webcam</a></p>
+					<p><a style="color:#337ab7;" href="https://meteo.search.ch/bedigliora.de.html" target="_blank">Wetter</a></p>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+		<div class="map">
+			<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2771.3454376362233!2d8.834136015575591!3d46.00429707911103!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4785d2611960eecf%3A0x4662b1b74c24c522!2sPianca+6%2C+6981+Bedigliora!5e0!3m2!1sen!2sch!4v1447068738027"></iframe>
+		</div>
+	</div>
+	<!--//contact-->
+	<!--footer-->
+	<div class="footer">
+		<div class="container">
+				<p class="wow bounceIn animated" data-wow-delay=".5s" style="visibility: visible; -webkit-animation-delay: .5s;">© Gaudenz Alder. All rights reserved | Design by <a href="http://w3layouts.com/"> W3layouts</a></p>
+			<div class="clearfix"> </div>
+		</div>
+	</div>
+	<!--//footer-->
+	<!--smooth-scrolling-of-move-up-->
+	<script type="text/javascript">
+			$(document).ready(function() {
+				/*
+				var defaults = {
+					containerID: 'toTop', // fading element id
+					containerHoverID: 'toTopHover', // fading element hover id
+					scrollSpeed: 1200,
+					easingType: 'linear'
+				};
+				*/
+
+				$().UItoTop({ easingType: 'easeOutQuart' });
+			});
+		</script>
+		<a href="#" id="toTop" style="display: block;"> <span id="toTopHover" style="opacity: 1;"> </span></a>
+	<!--//smooth-scrolling-of-move-up-->
+	<!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/bootstrap.js"> </script>
+</body>
+</html>

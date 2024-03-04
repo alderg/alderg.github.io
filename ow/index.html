@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>OW</title>
+<script>
+
+const weekday = ["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
+
+function process()
+{
+	var calLines = document.getElementById("calender").value.split("\n");
+	var comLines = document.getElementById("commits").value.split("\n");
+	var calEntries = {};
+	var index = 0;
+
+	while (index < calLines.length - 1)
+	{
+		console.log('index', index, calLines[index]);
+
+		var d = new Date(calLines[index] + calLines[index + 1].split(",")[0]);
+		var datestring = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
+		calEntries[datestring] = 0;
+		index += 4;
+	}
+
+	for (var i = 0; i < comLines.length; i++)
+	{
+		var d = new Date(comLines[i].split(" ")[0]);
+		var datestring = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
+
+		if (calEntries[datestring] != null)
+		{
+			calEntries[datestring] += 1;
+		}	
+	}
+
+	var result = '';
+	var zeroWeekend = 0;
+	var weekend = 0;
+	var zero = 0;
+	var sum = 0;
+
+	for (var key in calEntries)
+	{
+		var d = new Date(key);
+		var datestring = d.getDate() + "." + (d.getMonth()+1) + "." + d.getFullYear();
+		result += datestring + ', ' + calEntries[key] + ' Commit(s) (' + weekday[d.getDay()] + ')\n';
+
+		if (calEntries[key] == 0)
+		{
+			zero += 1;
+		}
+
+		if (d.getDay() == 0 || d.getDay() == 6)
+		{
+			weekend += 1;
+
+			if (calEntries[key] == 0)
+			{
+				zeroWeekend += 1;
+			}
+		}
+
+		sum += 1;
+	}
+
+	document.getElementById("result").value = result + 'Total: ' + sum + ' Tage (' + weekend + ' davon am Wochenende)' +
+		'\nTotal: ' + zero + ' Tage ohne Commits (' + zeroWeekend + ' davon am Wochenende)';
+}
+</script>
+</head>
+<body>
+Calender:
+<br>
+<textarea id="calender" rows="10" cols="50">
+</textarea>
+<br>
+Commits:
+<br>
+<textarea id="commits" rows="10" cols="50">
+</textarea>
+<br>
+<button onclick="process();">Process</button>
+<br>
+Result:
+<br>
+<textarea id="result" rows="10" cols="50">
+</textarea>
+<script>
+if (window.File != null && window.FileReader != null && window.FileList != null)
+{
+	function handleDrop(evt)
+	{
+		evt.stopPropagation();
+		evt.preventDefault();
+
+		if (evt.dataTransfer.files.length > 0)
+		{
+			var file = evt.dataTransfer.files[0];
+
+			var reader = new FileReader();
+			reader.onload = function (e)
+			{
+				evt.target.value = e.target.result;
+			};
+			reader.readAsText(file);
+		}
+	};
+
+	function handleDragOver(evt)
+	{
+		evt.stopPropagation();
+		evt.preventDefault();
+	};
+
+	// Setup the dnd listeners.
+	var textarea = document.getElementById('calender');
+
+	textarea.addEventListener('dragover', handleDragOver, false);
+	textarea.addEventListener('drop', handleDrop, false);
+
+	var textarea = document.getElementById('commits');
+
+	textarea.addEventListener('dragover', handleDragOver, false);
+	textarea.addEventListener('drop', handleDrop, false);
+}
+</script>
+</body>
+</html>

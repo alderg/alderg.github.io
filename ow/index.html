@@ -11,12 +11,19 @@ function process()
 	var calLines = document.getElementById("calender").value.split("\n");
 	var comLines = document.getElementById("commits").value.split("\n");
 	var calEntries = {};
+	var localWork = {};
 	var index = 0;
+
+	var result = '';
+	var zhWeekend = 0;
+	var zeroWeekend = 0;
+	var weekend = 0;
+	var zhTotal = 0;
+	var zero = 0;
+	var sum = 0;
 
 	while (index < calLines.length - 1)
 	{
-		console.log('index', index, calLines[index]);
-
 		var d = new Date(calLines[index] + calLines[index + 1].split(",")[0]);
 		var datestring = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
 		calEntries[datestring] = 0;
@@ -31,14 +38,18 @@ function process()
 		if (calEntries[datestring] != null)
 		{
 			calEntries[datestring] += 1;
-		}	
-	}
+		}
+		else if (localWork[datestring] == null)
+		{
+			localWork[datestring] = 0;
+			zhTotal += 1;
 
-	var result = '';
-	var zeroWeekend = 0;
-	var weekend = 0;
-	var zero = 0;
-	var sum = 0;
+			if (d.getDay() == 0 || d.getDay() == 6)
+			{
+				zhWeekend += 1;
+			}
+		}
+	}
 
 	for (var key in calEntries)
 	{
@@ -64,27 +75,37 @@ function process()
 		sum += 1;
 	}
 
-	document.getElementById("result").value = result + 'Total: ' + sum + ' Tage (' + weekend + ' davon am Wochenende)' +
-		'\nTotal: ' + zero + ' Tage ohne Commits (' + zeroWeekend + ' davon am Wochenende)';
+	var owTotal = sum - zero;
+	var total = owTotal + zhTotal;
+	var outputWeekend = document.getElementById("outputWeekend").checked;
+	var anteilOw = Math.round((owTotal * 1000) / total) / 10;
+
+	document.getElementById("result").value = result +
+		'Total OW: ' + sum + ' Tage anwesend' + ((outputWeekend) ? ' (' + weekend + ' davon am Wochenende)' : '') + '\n' +
+		'Total OW: ' + (sum - zero) + ' Arbeitstage' + ((outputWeekend) ? ' (' + (weekend - zeroWeekend) + ' davon am Wochenende)' : '') + '\n' +
+		'Total ZH: ' + zhTotal + ' Arbeitstage' + ((outputWeekend) ? ' (' + zhWeekend + ' davon am Wochenende)' : '') + '\n' +
+		'Total: ' + total + ' Arbeitstage' + ((outputWeekend) ? ' (' + (weekend + zhWeekend - zeroWeekend) + ' davon am Wochenende)' : '') + '\n' +
+		'Anteil OW: ' + anteilOw + '%\n' +
+		'Anteil ZH: ' + (100 - anteilOw) + '%';
 }
 </script>
 </head>
 <body>
 Calender:
 <br>
-<textarea id="calender" rows="10" cols="50">
+<textarea id="calender" rows="10" cols="60">
 </textarea>
 <br>
 Commits:
 <br>
-<textarea id="commits" rows="10" cols="50">
+<textarea id="commits" rows="10" cols="60">
 </textarea>
 <br>
-<button onclick="process();">Process</button>
+<button onclick="process();">Process</button> <input type="checkbox" id="outputWeekend">Output Weekend
 <br>
 Result:
 <br>
-<textarea id="result" rows="10" cols="50">
+<textarea id="result" rows="10" cols="60">
 </textarea>
 <script>
 if (window.File != null && window.FileReader != null && window.FileList != null)

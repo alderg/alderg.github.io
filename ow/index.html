@@ -1,10 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>OW</title>
+<title>Arbeitsrapport</title>
 <script>
 
 const weekday = ["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
+var title = 'Arbeitsrapport';
+
+function handleDrop(evt)
+{
+	evt.stopPropagation();
+	evt.preventDefault();
+
+	if (evt.dataTransfer.files.length > 0)
+	{
+		var file = evt.dataTransfer.files[0];
+
+		var reader = new FileReader();
+		reader.onload = function (e)
+		{
+			evt.target.value = e.target.result;
+
+			if (evt.target == document.getElementById('calender'))
+			{
+				calendarChanged();
+			}
+		};
+		reader.readAsText(file);
+	}
+};
+
+function handleDragOver(evt)
+{
+	evt.stopPropagation();
+	evt.preventDefault();
+};
+
+function calendarChanged()
+{
+	var calender = document.getElementById('calender').value;
+	var count = (calender.match(/Gaudenz: OW/g) || []).length;
+	document.getElementById('calendarInfo').innerHTML = '(' + count + ' Tage anwesend)';
+};
 
 function printResult()
 {
@@ -25,7 +62,7 @@ function printResult()
 	document.getElementById('scanner').value = scanner;
 	document.getElementById('commits').value = commits;
 	document.getElementById('result').value = printContents;
-}
+};
 
 function process()
 {
@@ -105,6 +142,7 @@ function process()
 		if (text.indexOf("erkannt") > 0)
 		{
 			var ts = scanCells[0].innerText.split(" ").slice(2);
+			//text = text.replace(/ erkannt/g, '');
 
 			var eu_date = ts[0];
 			var parts = eu_date.split('.');
@@ -181,26 +219,35 @@ function process()
 	}
 
 	json.sort(function(a, b){return a.d - b.d});
-	var result = '<table border="1" cellpadding="6"><thead><tr><td>Datum</td><td>Ort</td><td>Commits</td><td>Fingerscanner</td></tr></thead><tbody>';
+	var result = '<table border="1" cellpadding="6" style="font-size:small;" width="100%">' +
+		'<thead><tr><td>Datum</td><td>Ort</td><td>Commits</td><td>Fingerscanner</td></tr></thead><tbody>';
 
 	for (var i = 0; i < json.length; i++)
 	{
 		var entry = json[i];
-		result += '<tr><td>' + entry.date + '</td><td>' + entry.office + '</td><td style="font-size:small;">' +
-			entry.commits.join('<br>') + '</td><td style="font-size:small;">' + entry.scans.join('<br>') + '</td></tr>';
+		result += '<tr><td style="white-space:nowrap;">' + entry.date + '</td><td>' + entry.office + '</td><td style="font-size:small;">' +
+			entry.commits.join('<br>') + '</td><td style="font-size:x-small;white-space:nowrap;">' + entry.scans.sort().join('<br>') + '</td></tr>';
 	}
 
 	result += '</tbody></table>';
 
 	var owCommitsPercent = Math.round((owCommits * 1000) / commits) / 10;
+	var start = json[0].d;
+	var end = json[json.length - 1].d;
+	var today = new Date();
+	title = 'Arbeitsrapport draw.io AG ' + start.getDate() + "." + (start.getMonth()+1) + "." + start.getFullYear() +
+		' - ' + end.getDate() + "." + (end.getMonth()+1) + "." + end.getFullYear();
+	document.title = title;
 
-	document.getElementById("result").value = '<html><body><h3>Bericht draw.io AG ' +
-		json[0].date + ' - ' + json[json.length - 1].date + '</h3>' + result + '<br>' +
-		'Total: ' + total + ' Arbeitstage, ' + commits + ' Commits (1 Arbeitstag = mind. 1 Commit)<br>' +
+	document.getElementById("result").value = '<html><head><title>' + title + '</title></head>' +
+		'<body><h3>' + title + '</h3>' + result + '<br>' +
+		'Total: ' + total + ' Arbeitstage, ' + commits + ' Commits (1 Arbeitstag = min. 1 Commit)<br>' +
 		'Andere: ' + zhTotal + ' Arbeitstage (' + (100 - anteilOw) + '%), ' + (commits - owCommits) +
 			' Commits (' + (100 - owCommitsPercent) + '%)<br>' +
 		'Engelberg: ' + (sum - zero) + ' Arbeitstage (' + anteilOw + '%), ' + owCommits +
-			' Commits (' + owCommitsPercent + '%), ' + sum + ' Tage anwesend';
+			' Commits (' + owCommitsPercent + '%)<br>' +  //', ' + sum + ' Tage anwesend<br>' +
+		'Erstellt: ' + today.getDate() + "." + (today.getMonth()+1) + "." + today.getFullYear() +
+			', ' + ("0" + today.getHours()).slice(-2) + ":" + today.getMinutes() + '<br>' +
 
 		// '<h3>Auswertung</h3>Total Engelberg: ' + sum + ' Tage anwesend' + ((outputWeekend) ? ' (' + weekend + ' davon am Wochenende)' : '') + '<br>' +
 		// 'Total Engelberg: ' + (sum - zero) + ' Arbeitstage' + ((outputWeekend) ? ' (' + (weekend - zeroWeekend) + ' davon am Wochenende)' : '') + '<br>' +
@@ -209,76 +256,32 @@ function process()
 		// 'Anteil Engelberg: ' + anteilOw + '%<br>' +
 		// 'Anteil Andere: ' + (100 - anteilOw) + '%' +
 		'</body></html>';
-}
+};
 </script>
 </head>
 <body>
-Commits:
+Git Log Commits:
 <br>
-<textarea id="commits" rows="10" cols="60">
+<textarea id="commits" rows="6" cols="60" ondragover="handleDragOver(event);" ondrop="handleDrop(event);">
 </textarea>
 <br>
-Fingerscanner:
+hbTec Fingerscanner Table:
 <br>
-<textarea id="scanner" rows="10" cols="60">
+<textarea id="scanner" rows="6" cols="60" ondragover="handleDragOver(event);" ondrop="handleDrop(event);">
 </textarea>
 <br>
-Calender:
+Google Kalender Entries: <span id="calendarInfo"></span>
 <br>
-<textarea id="calender" rows="10" cols="60">
+<textarea id="calender" rows="6" cols="60" onchange="calendarChanged();" ondragover="handleDragOver(event);" ondrop="handleDrop(event);">
 </textarea>
 <br>
-<button onclick="process();">Process</button> <!--<input type="checkbox" id="outputWeekend">Output Weekend-->
+<button id="process" onclick="process();">Process</button> <!--<input type="checkbox" id="outputWeekend">Output Weekend-->
 <br>
-Result:
+Arbeitsrapport:
 <br>
 <textarea id="result" rows="10" cols="60">
 </textarea>
 <br>
 <button onclick="printResult();">Print</button>
-<script>
-if (window.File != null && window.FileReader != null && window.FileList != null)
-{
-	function handleDrop(evt)
-	{
-		evt.stopPropagation();
-		evt.preventDefault();
-
-		if (evt.dataTransfer.files.length > 0)
-		{
-			var file = evt.dataTransfer.files[0];
-
-			var reader = new FileReader();
-			reader.onload = function (e)
-			{
-				evt.target.value = e.target.result;
-			};
-			reader.readAsText(file);
-		}
-	};
-
-	function handleDragOver(evt)
-	{
-		evt.stopPropagation();
-		evt.preventDefault();
-	};
-
-	// Setup the dnd listeners.
-	var textarea = document.getElementById('calender');
-
-	textarea.addEventListener('dragover', handleDragOver, false);
-	textarea.addEventListener('drop', handleDrop, false);
-
-	var textarea = document.getElementById('scanner');
-
-	textarea.addEventListener('dragover', handleDragOver, false);
-	textarea.addEventListener('drop', handleDrop, false);
-
-	var textarea = document.getElementById('commits');
-
-	textarea.addEventListener('dragover', handleDragOver, false);
-	textarea.addEventListener('drop', handleDrop, false);
-}
-</script>
 </body>
 </html>

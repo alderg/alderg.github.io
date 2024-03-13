@@ -207,7 +207,7 @@ function process()
 		var d = new Date(key);
 		var datestring = d.getDate() + "." + (d.getMonth()+1) + "." + d.getFullYear();
 		json.push({d: d,
-			date: weekday[d.getDay()].substring(0, 2) + ' ' + datestring,
+			date: /*weekday[d.getDay()].substring(0, 2) + ' ' + */datestring,
 			office: outputCalendar[key].office,
 			commits: outputCalendar[key].commits,
 			scans: outputCalendar[key].scans});
@@ -220,13 +220,29 @@ function process()
 
 	json.sort(function(a, b){return a.d - b.d});
 	var result = '<table border="1" cellpadding="3" style="font-size:small;border-collapse:collapse;" width="100%">' +
-		'<thead><tr><td>Datum</td><td>Ort</td><td>Commits</td><td>Fingerscanner</td></tr></thead><tbody>';
+		'<thead><tr><td>Datum</td><td>Ort</td><td>Commits</td><td width="100px">Fingerscanner' +
+		'<sup style="font-size:xx-small;">1</sup></td></tr></thead><tbody>';
 
 	for (var i = 0; i < json.length; i++)
 	{
 		var entry = json[i];
 		result += '<tr><td style="white-space:nowrap;">' + entry.date + '</td><td>' + entry.office + '</td><td style="font-size:small;">' +
-			entry.commits.join('<br>') + '</td><td style="font-size:x-small;white-space:nowrap;">' + entry.scans.sort().join('<br>') + '</td></tr>';
+			entry.commits.join('<br>') + '</td><td>';
+
+		var scanTimes = [];
+
+		for (var j = 0; j < entry.scans.length; j++)
+		{
+			scanTimes.push(entry.scans[j].split(':').slice(0, 2).join(':'));
+		}
+
+		if (scanTimes.length > 0)
+		{
+			result += scanTimes.sort().join(' ');
+		}
+
+		result += '</td></tr>';
+
 	}
 
 	result += '</tbody></table>';
@@ -239,15 +255,16 @@ function process()
 		' - ' + end.getDate() + "." + (end.getMonth()+1) + "." + end.getFullYear();
 	document.title = title;
 
-	document.getElementById("result").value = '<html><head><title>' + title + '</title></head>' +
+	document.getElementById("result").value = '<html><head><meta charset="UTF-8"><title>' + title + '</title></head>' +
 		'<body><h3>' + title + '</h3>' + result + '<br>' +
-		'Total: ' + total + ' Arbeitstage, ' + commits + ' Commits (1 Arbeitstag = min. 1 Commit)<br>' +
-		'Andere: ' + zhTotal + ' Arbeitstage (' + (100 - anteilOw) + '%), ' + (commits - owCommits) +
-			' Commits (' + (100 - owCommitsPercent) + '%)<br>' +
-		'Engelberg: ' + (sum - zero) + ' Arbeitstage (' + anteilOw + '%), ' + owCommits +
-			' Commits (' + owCommitsPercent + '%)<br>' +  //', ' + sum + ' Tage anwesend<br>' +
+		'Total: ' + total + ' Arbeitstage ' + /*, ' + commits + ' Commits + */ '(1 Arbeitstag = min. 1 Commit)<br>' +
+		'Andere: ' + zhTotal + ' Arbeitstage (' + (100 - anteilOw) + '%)<br>' + /*, ' + (commits - owCommits) +
+			' Commits (' + (100 - owCommitsPercent) + '%)<br>' +*/
+		'Engelberg: ' + (sum - zero) + ' Arbeitstage (' + anteilOw + '%)<br>' + /*, ' + owCommits +
+			' Commits (' + owCommitsPercent + '%)<br>' +*/ //', ' + sum + ' Tage anwesend<br>' +
 		'Erstellt: ' + today.getDate() + "." + (today.getMonth()+1) + "." + today.getFullYear() +
 			', ' + ("0" + today.getHours()).slice(-2) + ":" + today.getMinutes() + '<br>' +
+		'<br><sup style="font-size:xx-small;">1</sup> Fingerscanner: Zeigefinger Rechts von Gaudenz Alder auf T&uuml;re erkannt' +
 
 		// '<h3>Auswertung</h3>Total Engelberg: ' + sum + ' Tage anwesend' + ((outputWeekend) ? ' (' + weekend + ' davon am Wochenende)' : '') + '<br>' +
 		// 'Total Engelberg: ' + (sum - zero) + ' Arbeitstage' + ((outputWeekend) ? ' (' + (weekend - zeroWeekend) + ' davon am Wochenende)' : '') + '<br>' +

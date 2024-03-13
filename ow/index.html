@@ -219,7 +219,7 @@ function process()
 	}
 
 	json.sort(function(a, b){return a.d - b.d});
-	var result = '<table border="1" cellpadding="6" style="font-size:small;" width="100%">' +
+	var result = '<table border="1" cellpadding="3" style="font-size:small;border-collapse:collapse;" width="100%">' +
 		'<thead><tr><td>Datum</td><td>Ort</td><td>Commits</td><td>Fingerscanner</td></tr></thead><tbody>';
 
 	for (var i = 0; i < json.length; i++)

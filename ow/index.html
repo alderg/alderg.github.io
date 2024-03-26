@@ -220,20 +220,20 @@ function process()
 
 	json.sort(function(a, b){return a.d - b.d});
 	var result = '<table border="1" cellpadding="3" style="font-size:small;border-collapse:collapse;" width="100%">' +
-		'<thead><tr><td>Datum</td><td>Ort</td><td>Commits</td><td width="100px">Fingerscanner' +
+		'<thead><tr><td>Datum</td><td>Ort</td><td>Commits</td><td width="114px">Fingerscanner' +
 		'<sup style="font-size:xx-small;">1</sup></td></tr></thead><tbody>';
 
 	for (var i = 0; i < json.length; i++)
 	{
 		var entry = json[i];
-		result += '<tr><td style="white-space:nowrap;">' + entry.date + '</td><td>' + entry.office + '</td><td style="font-size:small;">' +
-			entry.commits.join('<br>') + '</td><td>';
+		result += '<tr><td style="white-space:nowrap;">' + entry.date + '</td><td>' + entry.office + '</td><td>' +
+			entry.commits.join('<br>') + '</td><td style="font-size:x-small;">';
 
 		var scanTimes = [];
 
 		for (var j = 0; j < entry.scans.length; j++)
 		{
-			scanTimes.push(entry.scans[j].split(':').slice(0, 2).join(':'));
+			scanTimes.push(entry.scans[j].split(' ').slice(0, 1).join(':'));
 		}
 
 		if (scanTimes.length > 0)
@@ -265,7 +265,7 @@ function process()
 		'Erstellt: ' + today.getDate() + "." + (today.getMonth()+1) + "." + today.getFullYear() +
 			', ' + ("0" + today.getHours()).slice(-2) + ":" + today.getMinutes() + '<br>' +
 		'<br><span style="border-top:1px solid gray;padding:4px 20px 0 0;font-size:small;"><sup style="font-size:xx-small;">1</sup> ' +
-		'Fingerscanner: Fingerabdruck von Gaudenz Alder auf T&uuml;r&ouml;ffner in Engelberg erkannt</span>' +
+		'Fingerabdruck von Gaudenz Alder auf Fingerscanner in Engelberg erkannt</span>' +
 
 		// '<h3>Auswertung</h3>Total Engelberg: ' + sum + ' Tage anwesend' + ((outputWeekend) ? ' (' + weekend + ' davon am Wochenende)' : '') + '<br>' +
 		// 'Total Engelberg: ' + (sum - zero) + ' Arbeitstage' + ((outputWeekend) ? ' (' + (weekend - zeroWeekend) + ' davon am Wochenende)' : '') + '<br>' +

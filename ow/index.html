@@ -106,7 +106,6 @@ function process()
 			else if (localWork[datestring] == null)
 			{
 				localWork[datestring] = 0;
-				zhTotal += 1;
 
 				if (d.getDay() == 0 || d.getDay() == 6)
 				{
@@ -137,9 +136,11 @@ function process()
 	for (var i = 0; i < scanRows.length; i++)
 	{
 		var scanCells = scanRows[i].getElementsByTagName('td');
+
+		// Username Herr and Gaudenz are the same person
 		var text = scanCells[2].innerText.split("Text: Fingerscanner: ")[1].replace(/Herr/g, 'Gaudenz');
 
-		if (text.indexOf("erkannt") > 0)
+		if (text.indexOf("Gaudenz") > 0 && text.indexOf("erkannt") > 0)
 		{
 			var ts = scanCells[0].innerText.split(" ").slice(2);
 			//text = text.replace(/ erkannt/g, '');
@@ -166,6 +167,7 @@ function process()
 			}
 
 			outputCalendar[datestring].scans.push(ts[1] + ' ' + text);
+			outputCalendar[datestring].office = 'Engelberg';
 		}
 	}
 
@@ -191,14 +193,8 @@ function process()
 				zeroWeekend += 1;
 			}
 		}
-
-		sum += 1;
 	}
 
-	var owTotal = sum - zero;
-	var total = owTotal + zhTotal;
-	var outputWeekend = false; //document.getElementById("outputWeekend").checked;
-	var anteilOw = Math.round((owTotal * 1000) / total) / 10;
 	var owCommits = 0;
 	var json = [];
 
@@ -220,36 +216,71 @@ function process()
 
 	json.sort(function(a, b){return a.d - b.d});
 	var result = '<table border="1" cellpadding="3" style="font-size:small;border-collapse:collapse;" width="100%">' +
-		'<thead><tr><td>Datum</td><td>Ort</td><td>Commits</td><td width="114px">Fingerscanner' +
+		'<thead><tr><td></td><td>Datum</td><td>Ort</td><td>Commits</td><td width="114px">Fingerscanner' +
 		'<sup style="font-size:xx-small;">1</sup></td></tr></thead><tbody>';
+	var noscans = false;
+	var outputWeekend = false; //document.getElementById("outputWeekend").checked;
+	var counter = 0;
+	var start = null;
+	var end = null;
 
 	for (var i = 0; i < json.length; i++)
 	{
 		var entry = json[i];
-		result += '<tr><td style="white-space:nowrap;">' + entry.date + '</td><td>' + entry.office + '</td><td>' +
-			entry.commits.join('<br>') + '</td><td style="font-size:x-small;">';
 
-		var scanTimes = [];
-
-		for (var j = 0; j < entry.scans.length; j++)
+		if (entry.commits.length > 0)
 		{
-			scanTimes.push(entry.scans[j].split(' ').slice(0, 1).join(':'));
+			if (start == null)
+			{
+				start = entry.d;
+			}
+
+			end = entry.d;
+			counter += 1;
+			result += '<tr><td>' + counter + '</td><td style="white-space:nowrap;">' +
+				entry.date + '</td><td>' + entry.office;
+
+			if (entry.office == 'Engelberg')
+			{
+				sum += 1;
+
+				if (entry.scans.length == 0)
+				{
+					result += '<sup style="font-size:xx-small;">2</sup>';
+					noscans = true;
+				}
+			}
+			else
+			{
+				zhTotal += 1;
+			}
+
+			result += '</td><td>' + entry.commits.join('<br>') + '</td><td style="font-size:x-small;">';
+
+			var scanTimes = [];
+
+			for (var j = 0; j < entry.scans.length; j++)
+			{
+				scanTimes.push(entry.scans[j].split(' ').slice(0, 1).join(':'));
+			}
+
+			if (scanTimes.length > 0)
+			{
+				result += scanTimes.sort().join(' ');
+			}
+
+			result += '</td></tr>';
 		}
-
-		if (scanTimes.length > 0)
-		{
-			result += scanTimes.sort().join(' ');
-		}
-
-		result += '</td></tr>';
-
 	}
 
 	result += '</tbody></table>';
 
+	var owTotal = sum - zero;
+	var total = owTotal + zhTotal;
+	var anteilOw = Math.round((owTotal * 1000) / total) / 10;
 	var owCommitsPercent = Math.round((owCommits * 1000) / commits) / 10;
-	var start = json[0].d;
-	var end = json[json.length - 1].d;
+	// var start = json[0].d;
+	// var end = json[json.length - 1].d;
 	var today = new Date();
 	title = 'Arbeitsrapport draw.io AG ' + start.getDate() + "." + (start.getMonth()+1) + "." + start.getFullYear() +
 		' - ' + end.getDate() + "." + (end.getMonth()+1) + "." + end.getFullYear();
@@ -263,10 +294,11 @@ function process()
 		'Andere: ' + zhTotal + ' Arbeitstage (' + (100 - anteilOw) + '%)<br>' + /*, ' + (commits - owCommits) +
 			' Commits (' + (100 - owCommitsPercent) + '%)<br>' +*/
 		'Erstellt: ' + today.getDate() + "." + (today.getMonth()+1) + "." + today.getFullYear() +
-			', ' + ("0" + today.getHours()).slice(-2) + ":" + today.getMinutes() + '<br>' +
+			', ' + ("0" + today.getHours()).slice(-2) + ":" + (today.getMinutes() + "0").slice(0, 2)  + '<br>' +
 		'<br><span style="border-top:1px solid gray;padding:4px 20px 0 0;font-size:small;"><sup style="font-size:xx-small;">1</sup> ' +
 		'Fingerabdruck von Gaudenz Alder auf Fingerscanner in Engelberg erkannt</span>' +
-
+		((noscans) ? '<br><span><sup style="font-size:xx-small;">2</sup> ' +
+			'Fingerscanner nicht benutzt</span>' : '')
 		// '<h3>Auswertung</h3>Total Engelberg: ' + sum + ' Tage anwesend' + ((outputWeekend) ? ' (' + weekend + ' davon am Wochenende)' : '') + '<br>' +
 		// 'Total Engelberg: ' + (sum - zero) + ' Arbeitstage' + ((outputWeekend) ? ' (' + (weekend - zeroWeekend) + ' davon am Wochenende)' : '') + '<br>' +
 		// 'Total Andere: ' + zhTotal + ' Arbeitstage' + ((outputWeekend) ? ' (' + zhWeekend + ' davon am Wochenende)' : '') + '<br>' +

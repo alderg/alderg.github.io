@@ -54,15 +54,6 @@ function scannerChanged()
 	var scansByDate = parseScans(scanHtml);
 	var count = Object.keys(scansByDate).length;
 	document.getElementById('scannerInfo').innerHTML = '(' + count + ' Tage)';
-
-
-
-
-	console.log('scans', scansByDate);
-
-
-
-
 };
 
 function printResult()
@@ -241,7 +232,7 @@ function process()
 	for (var i = 0; i < json.length; i++)
 	{
 		var entry = json[i];
-		
+
 		if (entry.commits.length > 0)
 		{
 			if (start == null)

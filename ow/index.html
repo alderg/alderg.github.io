@@ -25,7 +25,12 @@ function handleDrop(evt)
 			{
 				calendarChanged();
 			}
+			else if (evt.target == document.getElementById('scanner'))
+			{
+				scannerChanged();
+			}
 		};
+
 		reader.readAsText(file);
 	}
 };
@@ -40,7 +45,24 @@ function calendarChanged()
 {
 	var calender = document.getElementById('calender').value;
 	var count = (calender.match(/Gaudenz: OW/g) || []).length;
-	document.getElementById('calendarInfo').innerHTML = '(' + count + ' Tage anwesend)';
+	document.getElementById('calendarInfo').innerHTML = '(' + count + ' Tage)';
+};
+
+function scannerChanged()
+{
+	var scanHtml = document.getElementById("scanner").value;
+	var scansByDate = parseScans(scanHtml);
+	var count = Object.keys(scansByDate).length;
+	document.getElementById('scannerInfo').innerHTML = '(' + count + ' Tage)';
+
+
+
+
+	console.log('scans', scansByDate);
+
+
+
+
 };
 
 function printResult()
@@ -63,6 +85,50 @@ function printResult()
 	document.getElementById('commits').value = commits;
 	document.getElementById('result').value = printContents;
 };
+
+function parseScans(html)
+{
+	var scanHtml = document.getElementById("scanner").value;
+
+	var div = document.createElement('div');
+	div.innerHTML = scanHtml;
+
+	var scanTable = div.getElementsByTagName('table')[0];
+	var scanBody = scanTable.getElementsByTagName('tbody')[0];
+	var scanRows = scanBody.getElementsByTagName('tr');
+	var scansByDate = {};
+
+	for (var i = 0; i < scanRows.length; i++)
+	{
+		var scanCells = scanRows[i].getElementsByTagName('td');
+
+		// Username Herr and Gaudenz are the same person
+		var text = scanCells[2].innerText.split("Text: Fingerscanner: ")[1].replace(/Herr/g, 'Gaudenz');
+
+		if (text.indexOf("Gaudenz") > 0 && text.indexOf("erkannt") > 0)
+		{
+			var ts = scanCells[0].innerText.split(" ").slice(2);
+			//text = text.replace(/ erkannt/g, '');
+
+			var eu_date = ts[0];
+			var parts = eu_date.split('.');
+			var us_date = parts[2]+'-'+parts[1]+'-'+parts[0];
+
+			var d = new Date(us_date + ' ' + ts[1]);
+			var datestring = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
+
+			if (scansByDate[datestring] == null)
+			{
+				scansByDate[datestring] = [];
+			}
+
+			scansByDate[datestring].push({timestamp: ts, date: d, text: text});
+		}
+	}
+
+	return scansByDate;
+};
+
 
 function process()
 {
@@ -124,77 +190,26 @@ function process()
 	}
 
 	var scanHtml = document.getElementById("scanner").value;
+	var scansByDate = parseScans(scanHtml);
 
-	var div = document.createElement('div');
-	div.innerHTML = scanHtml;
-	var scanTable = div.getElementsByTagName('table')[0];
-	var scanBody = scanTable.getElementsByTagName('tbody')[0];
-	var scanRows = scanBody.getElementsByTagName('tr');
-	var scanEntries = [];
-	var scansByDate = {};
-
-	for (var i = 0; i < scanRows.length; i++)
+	for (datestring in scansByDate)
 	{
-		var scanCells = scanRows[i].getElementsByTagName('td');
+		var scans = [];
 
-		// Username Herr and Gaudenz are the same person
-		var text = scanCells[2].innerText.split("Text: Fingerscanner: ")[1].replace(/Herr/g, 'Gaudenz');
-
-		if (text.indexOf("Gaudenz") > 0 && text.indexOf("erkannt") > 0)
+		for (var i = 0; i < scansByDate[datestring].length; i++)
 		{
-			var ts = scanCells[0].innerText.split(" ").slice(2);
-			//text = text.replace(/ erkannt/g, '');
-
-			var eu_date = ts[0];
-			var parts = eu_date.split('.');
-			var us_date = parts[2]+'-'+parts[1]+'-'+parts[0];
-
-			var d = new Date(us_date + ' ' + ts[1]);
-			var datestring = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
-
-			scanEntries.push({timestamp: ts, date: d, text: text});
-			
-			if (scansByDate[datestring] == null)
-			{
-				scansByDate[datestring] = [];
-			}
-
-			scansByDate[datestring].push({timestamp: ts, date: d, text: text});
-
-			if (outputCalendar[datestring] == null)
-			{
-				outputCalendar[datestring] = {office: 'Engelberg', commits: [], scans: []};
-			}
-
-			outputCalendar[datestring].scans.push(ts[1] + ' ' + text);
-			outputCalendar[datestring].office = 'Engelberg';
+			scans.push(scansByDate[datestring][i].timestamp[1]);
 		}
+
+		if (outputCalendar[datestring] == null)
+		{
+			outputCalendar[datestring] = {commits: []};
+		}
+
+		outputCalendar[datestring].office = 'Engelberg';
+		outputCalendar[datestring].scans = scans;
 	}
-
-	for (var key in calEntries)
-	{
-		var d = new Date(key);
-		var datestring = d.getDate() + "." + (d.getMonth()+1) + "." + d.getFullYear();
-		var scans = scansByDate[(d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear()];
-		// result += weekday[d.getDay()].substring(0, 2) + ' ' + datestring + ', ' + calEntries[key] +
-		// 	' Commit(s), ' + ((scans != null) ? scans.length : 0) + ' Scan(s) Day: ' + d.getDay() + '\n';
-
-		if (calEntries[key] == 0)
-		{
-			zero += 1;
-		}
-
-		if (d.getDay() == 0 || d.getDay() == 6)
-		{
-			weekend += 1;
-
-			if (calEntries[key] == 0)
-			{
-				zeroWeekend += 1;
-			}
-		}
-	}
-
+	
 	var owCommits = 0;
 	var json = [];
 
@@ -216,9 +231,8 @@ function process()
 
 	json.sort(function(a, b){return a.d - b.d});
 	var result = '<table border="1" cellpadding="3" style="font-size:small;border-collapse:collapse;" width="100%">' +
-		'<thead><tr><td></td><td>Datum</td><td>Ort</td><td>Commits</td><td width="114px">Fingerscanner' +
-		'<sup style="font-size:xx-small;">1</sup></td></tr></thead><tbody>';
-	var noscans = false;
+		'<thead><tr><td></td><td align="center">Datum</td><td align="center">Ort</td><td align="center">Commits</td>' +
+		'<td align="center" width="114px">Fingerscanner<sup style="font-size:xx-small;">1</sup></td></tr></thead><tbody>';
 	var outputWeekend = false; //document.getElementById("outputWeekend").checked;
 	var counter = 0;
 	var start = null;
@@ -227,6 +241,12 @@ function process()
 	for (var i = 0; i < json.length; i++)
 	{
 		var entry = json[i];
+
+
+
+		console.log('entry', i, entry);
+
+
 
 		if (entry.commits.length > 0)
 		{
@@ -237,36 +257,29 @@ function process()
 
 			end = entry.d;
 			counter += 1;
-			result += '<tr><td>' + counter + '</td><td style="white-space:nowrap;">' +
-				entry.date + '</td><td>' + entry.office;
+			result += '<tr><td align="center">' + counter + '</td>' +
+				'<td align="center" style="white-space:nowrap;">' +
+				entry.date + '</td><td align="center">' + entry.office;
 
 			if (entry.office == 'Engelberg')
 			{
 				sum += 1;
-
-				if (entry.scans.length == 0)
-				{
-					result += '<sup style="font-size:xx-small;">2</sup>';
-					noscans = true;
-				}
 			}
 			else
 			{
 				zhTotal += 1;
 			}
 
-			result += '</td><td>' + entry.commits.join('<br>') + '</td><td style="font-size:x-small;">';
-
-			var scanTimes = [];
-
-			for (var j = 0; j < entry.scans.length; j++)
+			result += '</td><td>' + entry.commits.join('<br>') + '</td>' +
+				'<td style="font-size:x-small;">';
+			
+			if (entry.scans.length > 0)
 			{
-				scanTimes.push(entry.scans[j].split(' ').slice(0, 1).join(':'));
+				result += entry.scans.sort().join(' ');
 			}
-
-			if (scanTimes.length > 0)
+			else if (entry.office == 'Engelberg')
 			{
-				result += scanTimes.sort().join(' ');
+				result += '-';
 			}
 
 			result += '</td></tr>';
@@ -297,8 +310,6 @@ function process()
 			', ' + ("0" + today.getHours()).slice(-2) + ":" + (today.getMinutes() + "0").slice(0, 2)  + '<br>' +
 		'<br><span style="border-top:1px solid gray;padding:4px 20px 0 0;font-size:small;"><sup style="font-size:xx-small;">1</sup> ' +
 		'Fingerabdruck von Gaudenz Alder auf Fingerscanner in Engelberg erkannt</span>' +
-		((noscans) ? '<br><span><sup style="font-size:xx-small;">2</sup> ' +
-			'Fingerscanner nicht benutzt</span>' : '')
 		// '<h3>Auswertung</h3>Total Engelberg: ' + sum + ' Tage anwesend' + ((outputWeekend) ? ' (' + weekend + ' davon am Wochenende)' : '') + '<br>' +
 		// 'Total Engelberg: ' + (sum - zero) + ' Arbeitstage' + ((outputWeekend) ? ' (' + (weekend - zeroWeekend) + ' davon am Wochenende)' : '') + '<br>' +
 		// 'Total Andere: ' + zhTotal + ' Arbeitstage' + ((outputWeekend) ? ' (' + zhWeekend + ' davon am Wochenende)' : '') + '<br>' +
@@ -315,9 +326,9 @@ Git Log Commits:
 <textarea id="commits" rows="6" cols="60" ondragover="handleDragOver(event);" ondrop="handleDrop(event);">
 </textarea>
 <br>
-hbTec Fingerscanner Table:
+hbTec Fingerscanner Table: <span id="scannerInfo"></span>
 <br>
-<textarea id="scanner" rows="6" cols="60" ondragover="handleDragOver(event);" ondrop="handleDrop(event);">
+<textarea id="scanner" rows="6" cols="60" onchange="scannerChanged();" ondragover="handleDragOver(event);" ondrop="handleDrop(event);">
 </textarea>
 <br>
 Google Kalender Entries: <span id="calendarInfo"></span>

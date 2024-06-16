@@ -117,32 +117,60 @@ function parseScans()
 	return scansByDate;
 };
 
-function checkCalendar(last)
+function checkCalendar(fullYear)
 {
 	var index = 0;
 	var total = 0;
 	var locations = {};
 	var calLines = document.getElementById("calendar").value.split("\n");
+	var last = new Date(0);
 
 	while (index < calLines.length - 1)
 	{
-		var location = calLines[index + 3].split(":")[1].split("(")[0].trim();
-
-		if (locations[location] == null)
-		{
-			locations[location] = 0;
-		}
-
 		var ts = new Date(calLines[index] + calLines[index + 1].split(",")[0]);
+		var location = null;
 
 		if (ts > last)
 		{
 			last = ts;
 		}
 
+		index += 2;
+
+		while (calLines[index] == 'All day')
+		{
+			index += 1;
+			tokens = calLines[index].split(":");
+			index += 1;
+
+			if (location != 'OW')
+			{
+				location = tokens[1].split("(")[0].trim();
+			}
+		}
+
+		if (locations[location] == null)
+		{
+			locations[location] = 0;
+		}
+
 		locations[location] += 1;
 		total += 1;
-		index += 4;
+	}
+
+	var today = new Date();
+
+	if (!fullYear && last.getFullYear() == today.getFullYear())
+	{
+		last = (last < today) ? today : last;
+	}
+	else if (!fullYear && last.getFullYear() != today.getFullYear())
+	{
+		return '';
+	}
+	else if (fullYear || last.getFullYear() != today.getFullYear())
+	{
+		last = new Date(last.getFullYear(), 11, 31);
 	}
 
 	var start = new Date(last.getFullYear(), 0, 1);
@@ -166,7 +194,13 @@ function checkCalendar(last)
 	{
 		var key = json[i].key;
 		var value = json[i].value;
-		result.push(key + ': ' + value + ' (' + Math.round(((value * 1000) / days)) / 10 + '%)');
+		var perc = Math.round(((value * 1000) / days)) / 10;
+		result.push(key + ': ' + value + ' (' + perc + '%)');
+		
+		if (key == 'OW')
+		{
+			result.push('Non-OW: ' + (days - value) + ' (' + (100 - perc) + '%)');
+		}
 	}
 
 	return result.join('\n');
@@ -178,9 +212,11 @@ function process()
 	{
 		if (document.getElementById('scanner').value == '')
 		{
-			var today = new Date();
-			document.getElementById('result').value = checkCalendar(today) + '\n\n' +
-				checkCalendar(new Date(today.getFullYear(), 11, 31));
+			var partial = checkCalendar(false);
+
+			document.getElementById('result').value =
+				partial + (partial.length > 0 ? '\n\n' : '') +
+				checkCalendar(true);
 
 			return;
 		}
@@ -370,6 +406,8 @@ function process()
 	}
 	catch (e)
 	{
+		console.error(e);
+
 		alert(e);
 	}
 };

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Arbeitsrapport</title>
+<script>
+
+var title = 'Bewegungsprofil draw.io AG iPhone';
+
+function handleDrop(evt)
+{
+	evt.stopPropagation();
+	evt.preventDefault();
+
+	if (evt.dataTransfer.files.length > 0)
+	{
+		var file = evt.dataTransfer.files[0];
+
+		var reader = new FileReader();
+		reader.onload = function (e)
+		{
+			evt.target.value = e.target.result;
+
+			if (evt.target == document.getElementById('calendar'))
+			{
+				calendarChanged();
+			}
+			else if (evt.target == document.getElementById('scanner'))
+			{
+				scannerChanged();
+			}
+		};
+
+		reader.readAsText(file);
+	}
+};
+
+function handleDragOver(evt)
+{
+	evt.stopPropagation();
+	evt.preventDefault();
+};
+
+function printResult()
+{
+    var printContents = document.getElementById('result').value;
+    var originalContents = document.body.innerHTML;
+
+ 	var calendar = document.getElementById('data').value;
+
+	document.body.innerHTML = printContents;
+
+	window.print();
+
+	document.body.innerHTML = originalContents;
+
+	document.getElementById('data').value = calendar;
+	document.getElementById('result').value = printContents;
+};
+
+function process()
+{
+	try
+	{
+        var lines = document.getElementById('data').value.split('\n');
+        var start = null;
+        var end = null;
+
+		var result = '<table border="1" cellpadding="3" style="font-size:small;border-collapse:collapse;" width="100%">' +
+			'<thead><tr><td align="center">Timestamp</td><td align="center">Latitude</td><td align="center">Longitude</td>' +
+			'<td align="center">Country</td><td align="center">City</td></tr></thead><tbody>';
+
+        // Adds all entries to the table
+        for (var i = 1; i < lines.length; i++)
+        {
+            var line = lines[i].trim();
+
+            if (line.length > 0)
+            {
+                var parts = line.split(',');
+
+                if (parts.length == 6)
+                {
+                    var date = parts[0];
+                    var lat = parts[1];
+                    var lon = parts[2];
+                    var country = parts[3];
+                    var city = parts[4];
+                    var place = parts[5];
+
+                    if (start == null)
+                    {
+                        start = date;
+                    }
+
+                    end = date;
+
+                    result += '<tr><td align="center" style="white-space:nowrap;">' + date + '</td>' +
+                        '<td align="center">' + lat + '</td><td align="center">' + lon + '</td>' +
+                        '<td align="center">' + country + '</td><td align="center">' +
+                        '<a href="https://www.google.com/maps/place/' + lat + ',' + lon + '">' +
+                            (city == '_' ? 'Unknown Location' : city) + '</a></td></tr>';
+                }
+            }
+        }
+        
+		result += '</tbody></table>';
+        var pageTitle = title + ' ' + start.split(' ')[0] + '-' + end.split(' ')[0];
+		document.title = pageTitle;
+
+		document.getElementById("result").value = '<html><head><meta charset="UTF-8"><title>' + pageTitle + '</title></head>' +
+			'<body style="font-size:8px;"><h3>' + pageTitle + '</h3>' + result + '</body></html>';
+	}
+	catch (e)
+	{
+		console.error(e);
+
+		alert(e);
+	}
+};
+</script>
+</head>
+<body>
+CSV Data:
+<br>
+<textarea id="data" rows="6" cols="60" ondragover="handleDragOver(event);" ondrop="handleDrop(event);">
+</textarea>
+<br>
+Result:
+<br>
+<textarea id="result" rows="10" cols="60">
+</textarea>
+<br>
+<button onclick="process();printResult();">Print</button>
+</body>
+</html>

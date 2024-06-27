@@ -278,7 +278,8 @@ function process()
 						'Engelberg' : 'Andere', commits: [], scans: []};
 				}
 
-				outputCalendar[datestring].commits.push(comLines[i].split(" ").slice(6).join(" "));
+				outputCalendar[datestring].commits.push('<a href="https://github.com/jgraph/drawio-dev/commit/' + comLines[i].split(" ")[5] + '">' +
+					comLines[i].split(" ")[5] + '</a> ' + comLines[i].split(" ").slice(6).join(" ") + '</a>');
 			}
 		}
 
@@ -381,7 +382,8 @@ function process()
 		// var start = json[0].d;
 		// var end = json[json.length - 1].d;
 		var today = new Date();
-		title = 'Arbeitsrapport draw.io AG ' + start.getDate() + "." + (start.getMonth()+1) + "." + start.getFullYear() +
+		title = 'Arbeitsrapport ' + /*today.getFullYear() + (today.getMonth()+1) + today.getDate() +*/
+			' draw.io AG ' + start.getDate() + "." + (start.getMonth()+1) + "." + start.getFullYear() +
 			' - ' + end.getDate() + "." + (end.getMonth()+1) + "." + end.getFullYear();
 		document.title = title;
 
@@ -393,7 +395,7 @@ function process()
 			'Andere: ' + zhTotal + ' Arbeitstage (' + (100 - anteilOw) + '%)<br>' + /*, ' + (commits - owCommits) +
 				' Commits (' + (100 - owCommitsPercent) + '%)<br>' +*/
 			'Erstellt: ' + today.getDate() + "." + (today.getMonth()+1) + "." + today.getFullYear() +
-				', ' + ("0" + today.getHours()).slice(-2) + ":" + (today.getMinutes() + "0").slice(0, 2)  + '<br>' +
+				', ' + ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2)  + '<br>' +
 			'<br><span style="border-top:1px solid gray;padding:4px 20px 0 0;font-size:small;"><sup style="font-size:xx-small;">1</sup> ' +
 			'Fingerabdruck von Gaudenz Alder auf Fingerscanner in Engelberg erkannt</span>' +
 			// '<h3>Auswertung</h3>Total Engelberg: ' + sum + ' Tage anwesend' + ((outputWeekend) ? ' (' + weekend + ' davon am Wochenende)' : '') + '<br>' +

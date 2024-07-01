@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Bewegungsprofil draw.io AG iPhone</title>
+<title>draw.io AG GitHub Audit Log</title>
 <script>
 
-var title = 'Bewegungsprofil draw.io AG iPhone';
+var title = 'draw.io AG GitHub Audit Log';
 
 function handleDrop(evt)
 {
@@ -57,6 +57,21 @@ function printResult()
 	document.getElementById('result').value = printContents;
 };
 
+function formatDate(ts, ignoreTime)
+{
+	var d = new Date(parseInt(ts));
+	var result = d.getDate() + '.' + (d.getMonth()+1) + '.' + d.getFullYear();
+
+	if (!ignoreTime)
+	{
+		result += ' ' + ("0" + d.getHours()).slice(-2) + ":" +
+			("0" + d.getMinutes()).slice(-2) + ":" +
+			("0" + d.getSeconds()).slice(-2);
+	}
+
+	return result;
+};
+
 function process()
 {
 	try
@@ -66,10 +81,12 @@ function process()
         var end = null;
 
 		var result = '<table border="1" cellpadding="3" style="font-size:small;border-collapse:collapse;" width="100%">' +
-			'<thead><tr><td align="center">Timestamp</td><td align="center">Latitude</td><td align="center">Longitude</td>' +
-			'<td align="center">Country</td><td align="center">City</td></tr></thead><tbody>';
-
+			'<thead><tr><td align="center">Timestamp</td><td align="center">ID</td><td align="center">Action</td>' +
+			'<td align="center">User</td><td align="center">Country</td><td align="center">IP</td></tr></thead><tbody>';
+			
         // Adds all entries to the table
+		var table = [];
+
         for (var i = 1; i < lines.length; i++)
         {
             var line = lines[i].trim();
@@ -77,34 +94,36 @@ function process()
             if (line.length > 0)
             {
                 var parts = line.split(',');
-
-                if (parts.length == 6)
+				
+				if (parts.length > 14)
                 {
-                    var date = parts[0];
-                    var lat = parts[1];
-                    var lon = parts[2];
-                    var country = parts[3];
-                    var city = parts[4];
-                    var place = parts[5];
+                    var ts = parts[0];
+					var id = parts[1];
+                    var action = parts[3];
+                    var user = parts[10];
+					var ip = parts[12];
+                    var country = parts[14];
 
                     if (start == null)
                     {
-                        start = date;
+                        start = ts;
                     }
 
-                    end = date;
+                    end = ts;
 
-                    result += '<tr><td align="center" style="white-space:nowrap;">' + date + '</td>' +
-                        '<td align="center">' + lat + '</td><td align="center">' + lon + '</td>' +
-                        '<td align="center">' + country + '</td><td align="center">' +
-                        '<a href="https://www.google.com/maps/place/' + lat + ',' + lon + '">' +
-                            (city == '_' ? 'Unknown Location' : city) + '</a></td></tr>';
+                   	table.push('<tr><td align="center" style="white-space:nowrap;">' + formatDate(ts) + '</td>' +
+                        '<td align="center">' + id + '</td><td align="center">' + action + '</td>' +
+						'<td align="center">' + user + '</td>' + '<td align="center">' + country + '</td><td align="center">' +
+                        '<a href="https://www.whatismyisp.com/ip/' + ip + '">' + ip + '</a></td></tr>');
                 }
             }
         }
         
-		result += '</tbody></table>';
-        var pageTitle = title + ' ' + start.split(' ')[0] + '-' + end.split(' ')[0];
+		table.reverse();
+
+		result += table.join('\n') + '</tbody></table>';
+		
+        var pageTitle = title + ' ' + formatDate(end, true) + '-' + formatDate(start, true);
 		document.title = pageTitle;
 
 		document.getElementById("result").value = '<html><head><meta charset="UTF-8"><title>' + pageTitle + '</title></head>' +

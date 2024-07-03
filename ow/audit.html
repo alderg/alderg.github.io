@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>draw.io AG GitHub Audit Log</title>
 <script>
 
-var title = 'draw.io AG GitHub Audit Log';
+var title = 'JGraph Ltd Audit Log for alderg';
+document.title = title;
+var serviceProviders = {'Iway AG': 'Z&uuml;rich', 'Swisscom schweiz AG': 'Engelberg', 'Bse Software GmbH': 'Tessin'};
 
 function handleDrop(evt)
 {
@@ -43,16 +44,13 @@ function handleDragOver(evt)
 function printResult()
 {
     var printContents = document.getElementById('result').value;
-    var originalContents = document.body.innerHTML;
-
- 	var calendar = document.getElementById('data').value;
-
+	var calendar = document.getElementById('data').value;
+	var year = document.getElementById('year').value;
+	var originalContents = document.body.innerHTML;
 	document.body.innerHTML = printContents;
-
 	window.print();
-
 	document.body.innerHTML = originalContents;
-
+	document.getElementById('year').value = year;
 	document.getElementById('data').value = calendar;
 	document.getElementById('result').value = printContents;
 };
@@ -72,62 +70,235 @@ function formatDate(ts, ignoreTime)
 	return result;
 };
 
+async function getISPInfo(ip)
+{
+	try
+	{
+		// Cached known cases
+		if (ip.substring(0, 8) == '178.238.')
+		{
+			return {isp: 'Swisscom schweiz AG'};
+		}
+		else if (ip.substring(0, 7) == '217.22.')
+		{
+			return {isp: 'Iway AG'};
+		}
+		else if (ip.substring(0, 7) == '82.220.')
+		{
+			return {isp: 'Bse Software GmbH'};
+		}
+		else
+		{
+			const ispResponse = await fetch('https://ipwhois.app/json/' + ip);
+			const ispData = await ispResponse.json();
+			
+			return ispData;
+		}
+	} catch (error)
+	{
+		console.error('Error fetching ISP information:', error);
+	}
+};
+
+function csvToArray(text)
+{
+	if (text.length > 0)
+	{
+		var p = '', row = [''], i = 0, s = !0, l;
+
+		for (l of text)
+		{
+			if ('"' === l)
+			{
+				if (s && l === p)
+				{
+					row[i] += l;
+				}
+
+				s = !s;
+			}
+			else if (',' === l && s)
+			{
+				l = row[++i] = '';
+			}
+			else
+			{
+				row[i] += l;
+			}
+
+			p = l;
+		}
+		
+		return row;
+	}
+	else
+	{
+		return [];
+	}
+};
+
 function process()
 {
 	try
 	{
+		var year = document.getElementById('year').value;
         var lines = document.getElementById('data').value.split('\n');
+		var ipaddr = {};
         var start = null;
         var end = null;
 
 		var result = '<table border="1" cellpadding="3" style="font-size:small;border-collapse:collapse;" width="100%">' +
-			'<thead><tr><td align="center">Timestamp</td><td align="center">ID</td><td align="center">Action</td>' +
-			'<td align="center">User</td><td align="center">Country</td><td align="center">IP</td></tr></thead><tbody>';
+			'<thead><tr><td align="center">Timestamp</td><td align="center">Reference</td><td align="center">Action</td>' +
+			'<td align="center">User</td><td align="center">Country</td><td align="center">IP<sup style="font-size:xx-small;">1</sup>' +
+				'</td></tr></thead><tbody>';
 			
         // Adds all entries to the table
 		var table = [];
-
+		
         for (var i = 1; i < lines.length; i++)
         {
             var line = lines[i].trim();
 
             if (line.length > 0)
             {
-                var parts = line.split(',');
+                var parts = csvToArray(line);
 				
 				if (parts.length > 14)
                 {
                     var ts = parts[0];
-					var id = parts[1];
-                    var action = parts[3];
-                    var user = parts[10];
-					var ip = parts[12];
-                    var country = parts[14];
 
-                    if (start == null)
-                    {
-                        start = ts;
-                    }
+					if (year == '' || new Date(parseInt(ts)).getFullYear() == year)
+					{
+						var id = parts[1];
+						var action = parts[3];
+						var branch = parts[34];
+						var repo = parts[243];
+						var org = parts[194];
+						var user = parts[10];
+						var ip = parts[12];
+						var country = parts[14];
 
-                    end = ts;
+						if (branch != '')
+						{
+							var refs = branch.split('/');
 
-                   	table.push('<tr><td align="center" style="white-space:nowrap;">' + formatDate(ts) + '</td>' +
-                        '<td align="center">' + id + '</td><td align="center">' + action + '</td>' +
-						'<td align="center">' + user + '</td>' + '<td align="center">' + country + '</td><td align="center">' +
-                        '<a href="https://www.whatismyisp.com/ip/' + ip + '">' + ip + '</a></td></tr>');
+							if (refs.length > 2)
+							{
+								branch = refs[refs.length - 1];
+							}
+							else
+							{
+								branch = null;
+							}
+						}
+
+						if (ip != null && ip != '' && country != '')
+						{
+							ipaddr[ip] = country;
+
+							if (start == null)
+							{
+								start = ts;
+							}
+
+							end = ts;
+
+							var date = new Date(parseInt(ts)).toISOString().split('T')[0];
+							var link = 'https://github.com/jgraph/drawio-dev/commits?author=' +
+								encodeURIComponent(user) + '&since=' + date + '&until=' + date;
+							var actionLink = 'https://github.com/organizations/jgraph/settings/audit-log?q=actor%3A' +
+								encodeURIComponent(user) + '+created%3A' + date + '+action%3A' + action;
+
+							var ref = (repo != '') ? (repo + (branch != null && branch != '' ? '/' + branch : '')) : org;
+
+							table.push('<tr><td align="center" style="white-space:nowrap;">' +					
+								'<a href="' + link + '">' + formatDate(ts) + '</a></td>' +
+								'<td align="center">' + ref + '</td><td align="center">' +
+
+								'<a href="' + actionLink + '">' + action + '</a></td>' +
+
+
+								'<td align="center">' + user + '</td>' + '<td align="center">' + country + '</td><td align="center">' +
+								'<a href="https://ipwho.is/' + ip + '?output=csv&fields=ip,connection.isp">' + ip + '</a></td></tr>');
+						}
+					}
                 }
             }
         }
         
 		table.reverse();
 
-		result += table.join('\n') + '</tbody></table>';
-		
-        var pageTitle = title + ' ' + formatDate(end, true) + '-' + formatDate(start, true);
-		document.title = pageTitle;
+		var counter = 0;
+		document.getElementById("result").value = 'Processing...';
+		var footer = '';
 
-		document.getElementById("result").value = '<html><head><meta charset="UTF-8"><title>' + pageTitle + '</title></head>' +
-			'<body style="font-size:8px;"><h3>' + pageTitle + '</h3>' + result + '</body></html>';
+		function done()
+		{
+			if (counter-- == 0)
+			{
+				for (ip in ipaddr)
+				{
+
+					if (footer == '')
+					{
+						footer += '<br><span style="border-top:1px solid gray;' +
+							'padding:4px 20px 0 0;font-size:small;">' +
+							'<sup style="font-size:xx-small;">1</sup> ' +
+							'Internet Service Providers:</span><br>';
+					}
+
+					if (ip != null && ip != '')
+					{
+						var data = ipaddr[ip];
+
+						if (data != null)
+						{
+							var isp = data.isp;
+
+							if (serviceProviders[isp] != null)
+							{
+								isp += ' (' + serviceProviders[isp] + ')';
+							}
+
+							footer += '<div style="font-size:small;">' + ip + ': ' + isp + '</div>';
+						}
+					}
+				}
+				
+				result += table.join('\n') + '</tbody></table>';
+				
+				var pageTitle = title + ' ' + formatDate(end, true) + ' - ' + formatDate(start, true);
+				document.title = pageTitle;
+
+				document.getElementById("result").value = '<html><head><meta charset="UTF-8"><title>' + pageTitle + '</title></head>' +
+					'<body style="font-size:8px;"><h3>' + pageTitle + '</h3>' + result + footer + '</body></html>';
+			}
+		};
+
+		for (ip in ipaddr)
+		{
+			
+			if (ip != null && ip != '')
+			{
+				counter++;
+				document.getElementById("result").value += 'Processing IP ' + ip + '...\n';
+
+				(function(addr)
+				{
+					ipaddr[addr] = {isp: 'unknown', country: 'unknown', city: 'unknown', org: 'unknown'};
+
+					getISPInfo(addr).then((ispData) => {
+
+						document.getElementById("result").value += 'Processed ' + addr + '\n';
+						ipaddr[addr] = ispData;
+
+						done();
+					});
+				})(ip);
+			}
+		}
+
+		done();
 	}
 	catch (e)
 	{
@@ -144,11 +315,18 @@ CSV Data:
 <textarea id="data" rows="6" cols="60" ondragover="handleDragOver(event);" ondrop="handleDrop(event);">
 </textarea>
 <br>
+Year: <input type="text" id="year">
+<br>
 Result:
 <br>
 <textarea id="result" rows="10" cols="60">
 </textarea>
 <br>
-<button onclick="process();printResult();">Print</button>
+<button onclick="process();">Process</button>
+<button onclick="printResult();">Print</button>
+<script>
+var after = document.getElementById('year');
+after.value = new Date().getFullYear();
+</script>
 </body>
 </html>

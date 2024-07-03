@@ -255,7 +255,8 @@ function process()
 			if (comLines[i].length > 0)
 			{
 				commits++;
-				var d = new Date(comLines[i].split(" ")[0]);
+				var tokens = comLines[i].split(" ");
+				var d = new Date(tokens[0]);
 				var datestring = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
 
 				if (calEntries[datestring] != null)
@@ -278,8 +279,8 @@ function process()
 						'Engelberg' : 'Andere', commits: [], scans: []};
 				}
 
-				outputCalendar[datestring].commits.push('<a href="https://github.com/jgraph/drawio-dev/commit/' + comLines[i].split(" ")[5] + '">' +
-					comLines[i].split(" ")[5] + '</a> ' + comLines[i].split(" ").slice(6).join(" ") + '</a>');
+				outputCalendar[datestring].commits.push('<a href="https://github.com/jgraph/drawio-dev/commit/' + tokens[5] + '">' +
+					tokens[1] + '</a> ' + tokens.slice(6).join(" "));
 			}
 		}
 
@@ -324,7 +325,7 @@ function process()
 
 		json.sort(function(a, b){return a.d - b.d});
 		var result = '<table border="1" cellpadding="3" style="font-size:small;border-collapse:collapse;" width="100%">' +
-			'<thead><tr><td></td><td align="center">Datum</td><td align="center">Ort</td><td align="center">Commits</td>' +
+			'<thead><tr><td></td><td align="center">Datum</td><td align="center">Standort</td><td align="center">Commits</td>' +
 			'<td align="center" width="114px">Fingerscanner<sup style="font-size:xx-small;">1</sup></td></tr></thead><tbody>';
 		var outputWeekend = false; //document.getElementById("outputWeekend").checked;
 		var counter = 0;
@@ -344,9 +345,9 @@ function process()
 
 				end = entry.d;
 				counter += 1;
-				result += '<tr><td align="center">' + counter + '</td>' +
-					'<td align="center" style="white-space:nowrap;">' +
-					entry.date + '</td><td align="center">' + entry.office;
+				result += '<tr><td valign="top" align="center">' + counter + '</td>' +
+					'<td valign="top" align="center" style="white-space:nowrap;">' +
+					entry.date + '</td><td  valign="top" align="center">' + entry.office;
 
 				if (entry.office == 'Engelberg')
 				{
@@ -357,8 +358,8 @@ function process()
 					zhTotal += 1;
 				}
 
-				result += '</td><td>' + entry.commits.join('<br>') + '</td>' +
-					'<td style="font-size:x-small;">';
+				result += '</td><td valign="top">' + entry.commits.join('<br>') + '</td>' +
+					'<td valign="top" style="font-size:x-small;">';
 				
 				if (entry.scans.length > 0)
 				{
@@ -366,7 +367,8 @@ function process()
 				}
 				else if (entry.office == 'Engelberg')
 				{
-					result += '-';
+					// No fingerscanner entries
+					result += '';
 				}
 
 				result += '</td></tr>';
@@ -382,20 +384,21 @@ function process()
 		// var start = json[0].d;
 		// var end = json[json.length - 1].d;
 		var today = new Date();
-		title = 'Arbeitsrapport ' + /*today.getFullYear() + (today.getMonth()+1) + today.getDate() +*/
-			' draw.io AG ' + start.getDate() + "." + (start.getMonth()+1) + "." + start.getFullYear() +
+		var pageTitle = title + ' draw.io AG ' + start.getDate() + "." + (start.getMonth()+1) + "." + start.getFullYear() +
 			' - ' + end.getDate() + "." + (end.getMonth()+1) + "." + end.getFullYear();
-		document.title = title;
+		document.title = String(today.getFullYear()) + ("0" + (today.getMonth() + 1)).slice(-2) + ("0" + today.getDate()).slice(-2) +
+			("0" + today.getHours()).slice(-2) + ("0" + today.getMinutes()).slice(-2) + ("0" + today.getSeconds()).slice(-2) + '-' + pageTitle;
 
-		document.getElementById("result").value = '<html><head><meta charset="UTF-8"><title>' + title + '</title></head>' +
-			'<body><h3>' + title + '</h3>' + result + '<br>' +
+		document.getElementById("result").value = '<html><head><meta charset="UTF-8"><title>' + pageTitle + '</title></head>' +
+			'<body><h3>' + pageTitle + '</h3>' + result + '<br>' +
 			'Total: ' + total + ' Arbeitstage ' + /*, ' + commits + ' Commits + */ '(1 Arbeitstag = min. 1 Commit)<br>' +
 			'Engelberg: ' + (sum - zero) + ' Arbeitstage (' + anteilOw + '%)<br>' + /*, ' + owCommits +
 				' Commits (' + owCommitsPercent + '%)<br>' +*/ //', ' + sum + ' Tage anwesend<br>' +
 			'Andere: ' + zhTotal + ' Arbeitstage (' + (100 - anteilOw) + '%)<br>' + /*, ' + (commits - owCommits) +
 				' Commits (' + (100 - owCommitsPercent) + '%)<br>' +*/
 			'Erstellt: ' + today.getDate() + "." + (today.getMonth()+1) + "." + today.getFullYear() +
-				', ' + ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2)  + '<br>' +
+				', ' + ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2) +
+				':' + ("0" + today.getSeconds()).slice(-2) + '<br>' +
 			'<br><span style="border-top:1px solid gray;padding:4px 20px 0 0;font-size:small;"><sup style="font-size:xx-small;">1</sup> ' +
 			'Fingerabdruck von Gaudenz Alder auf Fingerscanner in Engelberg erkannt</span>' +
 			// '<h3>Auswertung</h3>Total Engelberg: ' + sum + ' Tage anwesend' + ((outputWeekend) ? ' (' + weekend + ' davon am Wochenende)' : '') + '<br>' +

@@ -3,7 +3,7 @@
 <head>
 <script>
 
-var title = 'JGraph Ltd Audit Log for alderg';
+var title = 'Audit Log';
 document.title = title;
 var serviceProviders = {'Iway AG': 'Z&uuml;rich', 'Swisscom schweiz AG': 'Engelberg', 'Bse Software GmbH': 'Tessin'};
 
@@ -146,11 +146,13 @@ function process()
 		var ipaddr = {};
         var start = null;
         var end = null;
+		var owTotal = 0;
+		var otherTotal = 0;
 
 		var result = '<table border="1" cellpadding="3" style="font-size:small;border-collapse:collapse;" width="100%">' +
-			'<thead><tr><td align="center">Timestamp</td><td align="center">Reference</td><td align="center">Action</td>' +
-			'<td align="center">User</td><td align="center">Country</td><td align="center">IP<sup style="font-size:xx-small;">1</sup>' +
-				'</td></tr></thead><tbody>';
+			'<thead><tr><td></td><td align="center">Zeit</td><td align="center">Standort</td><td align="center">Referenz</td>' +
+			'<td align="center">Aktion</td><td align="center">IP-Adresse<sup style="font-size:xx-small;">1</sup></td>' +
+			'</tr></thead><tbody>';
 			
         // Adds all entries to the table
 		var table = [];
@@ -195,6 +197,17 @@ function process()
 						if (ip != null && ip != '' && country != '')
 						{
 							ipaddr[ip] = country;
+							var office = 'Andere';
+		
+							if (ip.substring(0, 8) == '178.238.')
+							{
+								office = 'Engelberg';
+								owTotal++;
+							}
+							else
+							{
+								otherTotal++;
+							}
 
 							if (start == null)
 							{
@@ -211,26 +224,30 @@ function process()
 
 							var ref = (repo != '') ? (repo + (branch != null && branch != '' ? '/' + branch : '')) : org;
 
-							table.push('<tr><td align="center" style="white-space:nowrap;">' +					
-								'<a href="' + link + '">' + formatDate(ts) + '</a></td>' +
-								'<td align="center">' + ref + '</td><td align="center">' +
-
+							table.push('<td align="center" style="white-space:nowrap;">' + formatDate(ts) + '</td>' +
+								'<td align="center">' + office + '</td>' +
+								'<td align="center"><a href="' + link + '">' + ref + '</a></td><td align="center">' +
 								'<a href="' + actionLink + '">' + action + '</a></td>' +
-
-
-								'<td align="center">' + user + '</td>' + '<td align="center">' + country + '</td><td align="center">' +
-								'<a href="https://ipwho.is/' + ip + '?output=csv&fields=ip,connection.isp">' + ip + '</a></td></tr>');
+								//'<td align="center">' + user + '</td>' + '<td align="center">' + country + '</td>' +
+								'<td align="center"><a href="https://ipwho.is/' + ip + '?output=csv&fields=ip,connection.isp">' + ip + '</a></td>' +
+								'</tr>');
 						}
 					}
                 }
             }
         }
         
-		table.reverse();
-
 		var counter = 0;
 		document.getElementById("result").value = 'Processing...';
-		var footer = '';
+		var today = new Date();
+		var footer = '<br>' +
+			'Engelberg: ' + owTotal + ' (' + Math.round(owTotal * 100 / (owTotal + otherTotal)) + '%)<br>' +
+			'Andere: ' + otherTotal + ' (' + Math.round(otherTotal * 100 / (owTotal + otherTotal)) + '%)<br>' +
+			'Total: ' + (owTotal + otherTotal) + '<br>' +
+			'Erstellt: ' + today.getDate() + "." + (today.getMonth() + 1) + "." + today.getFullYear() +
+				', ' + ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2) +
+				':' + ("0" + today.getSeconds()).slice(-2) + '<br>';
+		var legend = '';
 
 		function done()
 		{
@@ -239,12 +256,10 @@ function process()
 				for (ip in ipaddr)
 				{
 
-					if (footer == '')
+					if (legend == '')
 					{
-						footer += '<br><span style="border-top:1px solid gray;' +
-							'padding:4px 20px 0 0;font-size:small;">' +
-							'<sup style="font-size:xx-small;">1</sup> ' +
-							'Internet Service Providers:</span><br>';
+						legend += '<br><span style="border-top:1px solid gray;padding:4px 20px 0 0;font-size:small;">' +
+							'<sup style="font-size:xx-small;">1</sup> ' + 'Internet Service Providers:</span><br>';
 					}
 
 					if (ip != null && ip != '')
@@ -260,18 +275,25 @@ function process()
 								isp += ' (' + serviceProviders[isp] + ')';
 							}
 
-							footer += '<div style="font-size:small;">' + ip + ': ' + isp + '</div>';
+							legend += '<div style="font-size:small;">' + ip + ': ' + isp + '</div>';
 						}
 					}
 				}
+
+				// Add table to result in reverse order
+				for (var i = table.length - 1; i >= 0; i--)
+				{
+					result += '<tr><td align="center" style="white-space:nowrap;">' + (table.length - i) + '</td>' + table[i] + '\n';
+				}
+
+				result += '</tbody></table>';
 				
-				result += table.join('\n') + '</tbody></table>';
-				
-				var pageTitle = title + ' ' + formatDate(end, true) + ' - ' + formatDate(start, true);
-				document.title = pageTitle;
+				var pageTitle = title + ' JGraph Ltd. for alderg ' + formatDate(end, true) + ' - ' + formatDate(start, true);
+				document.title = String(today.getFullYear()) + ("0" + (today.getMonth() + 1)).slice(-2) + ("0" + today.getDate()).slice(-2) +
+					("0" + today.getHours()).slice(-2) + ("0" + today.getMinutes()).slice(-2) + ("0" + today.getSeconds()).slice(-2) + '-' + pageTitle;
 
 				document.getElementById("result").value = '<html><head><meta charset="UTF-8"><title>' + pageTitle + '</title></head>' +
-					'<body style="font-size:8px;"><h3>' + pageTitle + '</h3>' + result + footer + '</body></html>';
+					'<body style="font-size:8px;"><h3>' + pageTitle + '</h3>' + result + footer + legend + '</body></html>';
 			}
 		};
 

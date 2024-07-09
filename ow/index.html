@@ -393,10 +393,10 @@ function process()
 		document.getElementById("result").value = '<html><head><meta charset="UTF-8"><title>' + pageTitle + '</title></head>' +
 			'<body><h3>' + pageTitle + '</h3>' + result + '<br>' +
 			'Total: ' + total + ' Arbeitstage ' + /*, ' + commits + ' Commits + */ '(1 Arbeitstag = min. 1 Commit)<br>' +
-			'Engelberg: ' + (sum - zero) + ' Arbeitstage (' + anteilOw + '%)<br>' + /*, ' + owCommits +
-				' Commits (' + owCommitsPercent + '%)<br>' +*/ //', ' + sum + ' Tage anwesend<br>' +
 			'Andere: ' + zhTotal + ' Arbeitstage (' + (100 - anteilOw) + '%)<br>' + /*, ' + (commits - owCommits) +
 				' Commits (' + (100 - owCommitsPercent) + '%)<br>' +*/
+			'Engelberg: ' + (sum - zero) + ' Arbeitstage (' + anteilOw + '%)<br>' + /*, ' + owCommits +
+				' Commits (' + owCommitsPercent + '%)<br>' +*/ //', ' + sum + ' Tage anwesend<br>' +
 			'Erstellt: ' + today.getDate() + "." + (today.getMonth()+1) + "." + today.getFullYear() +
 				', ' + ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2) +
 				':' + ("0" + today.getSeconds()).slice(-2) + '<br>' +

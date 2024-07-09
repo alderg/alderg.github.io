@@ -160,9 +160,9 @@ function process()
 
 		document.getElementById("result").value = '<html><head><meta charset="UTF-8"><title>' + pageTitle + '</title></head>' +
 			'<body style="font-size:8px;"><h3>' + pageTitle + '</h3>' + result + '<br>' +
-			'Engelberg: ' + owTotal + ' (' + Math.round(owTotal * 100 / (owTotal + otherTotal)) + '%)<br>' +
-			'Andere: ' + otherTotal + ' (' + Math.round(otherTotal * 100 / (owTotal + otherTotal)) + '%)<br>' +
 			'Total: ' + (owTotal + otherTotal) + '<br>' +
+			'Andere: ' + otherTotal + ' (' + Math.round(otherTotal * 100 / (owTotal + otherTotal)) + '%)<br>' +
+			'Engelberg: ' + owTotal + ' (' + Math.round(owTotal * 100 / (owTotal + otherTotal)) + '%)<br>' +
 			'Erstellt: ' + today.getDate() + "." + (today.getMonth()+1) + "." + today.getFullYear() +
 			', ' + ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2) +
 			':' + ("0" + today.getSeconds()).slice(-2) +

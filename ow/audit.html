@@ -5,7 +5,7 @@
 
 var title = 'Audit Log';
 document.title = title;
-var serviceProviders = {'Iway AG': 'Z&uuml;rich', 'Swisscom schweiz AG': 'Engelberg', 'Bse Software GmbH': 'Tessin'};
+var serviceProviders = {'Iway AG': 'Z&uuml;rich', 'Swisscom schweiz AG': 'Engelberg', 'Bse Software GmbH': 'Andere'};
 
 function handleDrop(evt)
 {
@@ -241,9 +241,9 @@ function process()
 		document.getElementById("result").value = 'Processing...';
 		var today = new Date();
 		var footer = '<br>' +
-			'Engelberg: ' + owTotal + ' (' + Math.round(owTotal * 100 / (owTotal + otherTotal)) + '%)<br>' +
-			'Andere: ' + otherTotal + ' (' + Math.round(otherTotal * 100 / (owTotal + otherTotal)) + '%)<br>' +
 			'Total: ' + (owTotal + otherTotal) + '<br>' +
+			'Andere: ' + otherTotal + ' (' + Math.round(otherTotal * 100 / (owTotal + otherTotal)) + '%)<br>' +
+			'Engelberg: ' + owTotal + ' (' + Math.round(owTotal * 100 / (owTotal + otherTotal)) + '%)<br>' +
 			'Erstellt: ' + today.getDate() + "." + (today.getMonth() + 1) + "." + today.getFullYear() +
 				', ' + ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2) +
 				':' + ("0" + today.getSeconds()).slice(-2) + '<br>';

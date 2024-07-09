@@ -123,7 +123,7 @@ function process()
                     var place = parts[5];
 
 					var office = haversineDistance(lat, lon, knownLocations['Engelberg'].lat,
-						knownLocations['Engelberg'].lon) < 20 ? 'Engelberg' : 'Andere';
+						knownLocations['Engelberg'].lon) < 10 ? 'Engelberg' : 'Andere';
 
 					if (office == 'Engelberg')
 					{
@@ -166,8 +166,8 @@ function process()
 			'Erstellt: ' + today.getDate() + "." + (today.getMonth()+1) + "." + today.getFullYear() +
 			', ' + ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2) +
 			':' + ("0" + today.getSeconds()).slice(-2) +
-			'<br><br><span style="border-top:1px solid gray;padding:4px 20px 0 0;font-size:small;"><sup style="font-size:xx-small;">1</sup> ' +
-			'Standort Engelberg innerhalb von 20km</span>' +
+			'<br><br><span style="border-top:1px solid gray;padding:4px 20px 0 0;font-size:small;">' +
+			'<sup style="font-size:xx-small;">1</sup> Standort Engelberg (Radius <10km)</span>' +
 			'<br></body></html>';
 	}
 	catch (e)

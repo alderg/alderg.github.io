@@ -279,6 +279,7 @@ function process()
 						'Engelberg' : 'Andere', commits: [], scans: []};
 				}
 
+				// TODO: Get source repository for link
 				outputCalendar[datestring].commits.push('<a href="https://github.com/jgraph/drawio-dev/commit/' + tokens[5] + '">' +
 					tokens[1] + '</a> ' + tokens.slice(6).join(" "));
 			}

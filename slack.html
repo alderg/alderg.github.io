@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+var title = 'Logbuch';
+document.title = title;
+
+function handleDrop(evt)
+{
+	evt.stopPropagation();
+	evt.preventDefault();
+
+	if (evt.dataTransfer.files.length > 0)
+	{
+		var file = evt.dataTransfer.files[0];
+		var reader = new FileReader();
+
+		reader.onload = function (e)
+		{
+			evt.target.value = e.target.result;
+		};
+
+		reader.readAsText(file);
+	}
+};
+
+function handleDragOver(evt)
+{
+	evt.stopPropagation();
+	evt.preventDefault();
+};
+
+function printResult()
+{
+    var printContents = document.getElementById('result').value;
+    var pageContents = document.body.innerHTML;
+
+	var slack = document.getElementById('slack').value;
+	var label = document.getElementById('label').value;
+	var ip = document.getElementById('ip').value;
+	var ignorePhone = document.getElementById('ignorePhone').checked;
+	var year = document.getElementById('year').value;
+
+	document.body.innerHTML = printContents;
+	window.print();
+	document.body.innerHTML = pageContents;
+
+	document.getElementById('slack').value = slack;
+	document.getElementById('label').value = label;
+	document.getElementById('ip').value = ip;
+	document.getElementById('ignorePhone').checked = ignorePhone;
+	document.getElementById('year').value = year;
+	document.getElementById('result').value = printContents;
+};
+
+function dateString(date)
+{
+	return date.getDate() + '.' + (date.getMonth() + 1) +
+		'.' + date.getFullYear();
+};
+
+function csvToArray(text)
+{
+	if (text.length > 0)
+	{
+		var p = '', row = [''], i = 0, s = !0, l;
+
+		for (l of text)
+		{
+			if ('"' === l)
+			{
+				if (s && l === p)
+				{
+					row[i] += l;
+				}
+
+				s = !s;
+			}
+			else if (',' === l && s)
+			{
+				l = row[++i] = '';
+			}
+			else
+			{
+				row[i] += l;
+			}
+
+			p = l;
+		}
+		
+		return row;
+	}
+	else
+	{
+		return [];
+	}
+};
+
+function parseSlack()
+{
+	var logLines = document.getElementById("slack").
+		value.split("\n").reverse();
+	var slackByDate = {};
+	var index = 1;
+
+	while (index < logLines.length - 1)
+	{
+		var entry = csvToArray(logLines[index], ',');
+
+		if (isValidEntry(entry))
+		{
+			var date = dateString(new Date(entry[0]));
+
+			if (slackByDate[date] == null)
+			{
+				slackByDate[date] = [];
+			}
+			
+			slackByDate[date].push(entry);
+		}
+
+		index += 1;
+	}
+
+	return slackByDate;
+};
+
+function getKeys(obj)
+{
+	var result = [];
+
+	for (var key in obj)
+	{
+		result.push(key);
+	}
+
+	return result;
+};
+
+function isValidEntry(entry)
+{
+	return !document.getElementById('ignorePhone').checked ||
+		entry[2].toLowerCase().indexOf('phone') < 0;
+};
+
+function isValidAddress(ip)
+{
+	var ipFilter = document.getElementById('ip').value;
+
+	return ip.substring(0, ipFilter.length) == ipFilter;
+};
+
+function process()
+{
+	try
+	{
+		var year = document.getElementById('year').value;
+		var logsByDate = parseSlack();
+		var start = null;
+		var end = null;
+		var dates = {};
+
+		for (var date in logsByDate)
+		{
+			if (date.split('.')[2] == year)
+			{
+				var logs = logsByDate[date];
+
+				for (var i = 0; i < logs.length; i++)
+				{
+					if (isValidAddress(logs[i][3]))
+					{
+						end = date;
+
+						if (start == null)
+						{
+							start = date;
+						}
+
+						if (dates[date] == null)
+						{
+							dates[date] = [];
+						}
+
+						dates[date].push(logs[i]);
+					}
+				}
+			}
+		}
+
+		var total = 0;
+		var result = '<table border="1" cellpadding="3" style="font-size:small;border-collapse:collapse;" width="100%">' +
+			'<thead><tr><td></td><td align="center">Date</td><td align="center">User Agents</td>' +
+			'<td align="center">Logins</td><td align="center">IP Addresses</td></tr></thead><tbody>';
+
+		for (var key in dates)
+		{
+			var entries = dates[key];
+			var agents = {};
+			var logins = 0;
+			var ips = {};
+			total += 1;
+
+			for (var i = 0; i < entries.length; i++)
+			{
+				logins += parseInt(entries[i][4]);
+				var agent = entries[i][2];
+				var ip = entries[i][3];
+
+				if (agents[agent] == null)
+				{
+					agents[agent] = true;
+				}
+
+				if (ips[ip] == null)
+				{
+					ips[ip] = true;
+				}
+			}
+
+			result += '<tr><td valign="top" align="center">' + total + '</td>' +
+				'<td valign="top" align="center" style="white-space:nowrap;">' + key +
+				'</td><td valign="top" style="font-size:x-small;">' + getKeys(agents).join('<br>') +
+				'</td><td align="center" valign="top">' + logins +
+				'</td><td align="center" valign="top" style="font-size:x-small;">' +
+					getKeys(ips).join('<br>') + '</td></tr>';
+		}
+
+		result += '</tbody></table>';
+
+		var today = new Date();
+		var pageTitle = title + ' draw.io AG ' + start + ' - ' + end;
+		var ts = String(today.getFullYear()) + ('0' + (today.getMonth() + 1)).slice(-2) +
+			('0' + today.getDate()).slice(-2) + ('0' + today.getHours()).slice(-2) + ('0' +
+			today.getMinutes()).slice(-2) + ('0' + today.getSeconds()).slice(-2);
+		document.title = ts + '-' + pageTitle;
+		var label = document.getElementById('label').value;
+		document.getElementById('result').value = '<html><head><meta charset="UTF-8">' +
+			'<title>' + pageTitle + '</title></head>' + '<body><h3>' + pageTitle + '</h3>' +
+			result + '<br>Total ' + label + ': ' + total + ' Arbeitstage</body></html>';
+
+		console.log(label, start + '-' + end + ':', total);
+	}
+	catch (e)
+	{
+		console.error(e);
+		alert(e);
+	}
+};
+</script>
+</head>
+<body>
+<a href="http://my.slack.com/account/logs" target="_blank">Slack Access Log:</a>
+<br>
+<textarea id="slack" rows="10" cols="60" ondragover="handleDragOver(event);" ondrop="handleDrop(event);">
+</textarea>
+<br><br>
+IP:
+<input id="ip" type="text" value="178." size="8">
+<input id="label" type="text" value="Obwalden" size="12">
+Year:
+<input id="year" type="text" size="5">
+<input type="checkbox" id="ignorePhone" checked="checked">
+Ignore Phone
+&nbsp;
+<button id="process" onclick="process();">Process</button>
+<br><br>
+Result:
+<br>
+<textarea id="result" rows="10" cols="60">
+</textarea>
+<br>
+<button onclick="printResult();">Print</button>
+<script>
+	var today = new Date();
+	document.getElementById('year').value = today.getFullYear() - 1;
+</script>
+</body>
+</html>

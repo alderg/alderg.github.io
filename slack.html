@@ -156,6 +156,7 @@ function process()
 	{
 		var year = document.getElementById('year').value;
 		var logsByDate = parseSlack();
+		var lastIp = null;
 		var start = null;
 		var end = null;
 		var dates = {};
@@ -199,7 +200,6 @@ function process()
 			var agents = {};
 			var logins = 0;
 			var ips = {};
-			total += 1;
 
 			for (var i = 0; i < entries.length; i++)
 			{
@@ -217,13 +217,21 @@ function process()
 					ips[ip] = true;
 				}
 			}
+			
+			var allIps = getKeys(ips);
 
-			result += '<tr><td valign="top" align="center">' + total + '</td>' +
-				'<td valign="top" align="center" style="white-space:nowrap;">' + key +
-				'</td><td valign="top" style="font-size:x-small;">' + getKeys(agents).join('<br>') +
-				'</td><td align="center" valign="top">' + logins +
-				'</td><td align="center" valign="top" style="font-size:x-small;">' +
-					getKeys(ips).join('<br>') + '</td></tr>';
+			if (logins > 1 || (allIps.length > 0 && allIps[0] == lastIp))
+			{
+				total += 1;
+				result += '<tr><td valign="top" align="center">' + total + '</td>' +
+					'<td valign="top" align="center" style="white-space:nowrap;">' + key +
+					'</td><td valign="top" style="font-size:x-small;">' + getKeys(agents).join('<br>') +
+					'</td><td align="center" valign="top">' + logins +
+					'</td><td align="center" valign="top" style="font-size:x-small;">' +
+						allIps.join('<br>') + '</td></tr>';
+			}
+
+			lastIp = allIps[0];
 		}
 
 		result += '</tbody></table>';

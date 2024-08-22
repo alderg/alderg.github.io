@@ -219,6 +219,13 @@ function process()
 			}
 			
 			var allIps = getKeys(ips);
+			var ipLinks = [];
+
+			for (var i = 0; i < allIps.length; i++)
+			{
+				ipLinks.push('<a href="https://ipwho.is/' + allIps[i] +
+					'?output=csv&fields=ip,connection.isp">' + allIps[i] + '</a>');
+			}
 
 			if (logins > 1 || (allIps.length > 0 && allIps[0] == lastIp))
 			{
@@ -228,7 +235,7 @@ function process()
 					'</td><td valign="top" style="font-size:x-small;">' + getKeys(agents).join('<br>') +
 					'</td><td align="center" valign="top">' + logins +
 					'</td><td align="center" valign="top" style="font-size:x-small;">' +
-						allIps.join('<br>') + '</td></tr>';
+						ipLinks.join('<br>') + '</td></tr>';
 			}
 
 			lastIp = allIps[0];

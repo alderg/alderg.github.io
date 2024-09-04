@@ -37,9 +37,11 @@ function printResult()
 
 	var slack = document.getElementById('slack').value;
 	var label = document.getElementById('label').value;
-	var ip = document.getElementById('ip').value;
-	var ignorePhone = document.getElementById('ignorePhone').checked;
+	var include = document.getElementById('include').value;
+	var exclude = document.getElementById('exclude').value;
 	var year = document.getElementById('year').value;
+	var after = document.getElementById('after').value;
+	var days = document.getElementById('days').value;
 
 	document.body.innerHTML = printContents;
 	window.print();
@@ -47,9 +49,11 @@ function printResult()
 
 	document.getElementById('slack').value = slack;
 	document.getElementById('label').value = label;
-	document.getElementById('ip').value = ip;
-	document.getElementById('ignorePhone').checked = ignorePhone;
+	document.getElementById('include').value = include;
+	document.getElementById('exclude').value = exclude;
 	document.getElementById('year').value = year;
+	document.getElementById('after').value = after;
+	document.getElementById('days').value = days;
 	document.getElementById('result').value = printContents;
 };
 
@@ -57,6 +61,13 @@ function dateString(date)
 {
 	return date.getDate() + '.' + (date.getMonth() + 1) +
 		'.' + date.getFullYear();
+};
+
+function parseDate(text)
+{
+	var parts = text.split('.');
+
+	return new Date(parts[1] + '/' + parts[0] + '/' + parts[2]);
 };
 
 function csvToArray(text)
@@ -106,19 +117,14 @@ function parseSlack()
 	while (index < logLines.length - 1)
 	{
 		var entry = csvToArray(logLines[index], ',');
+		var date = dateString(new Date(entry[0]));
 
-		if (isValidEntry(entry))
+		if (slackByDate[date] == null)
 		{
-			var date = dateString(new Date(entry[0]));
-
-			if (slackByDate[date] == null)
-			{
-				slackByDate[date] = [];
-			}
-			
-			slackByDate[date].push(entry);
+			slackByDate[date] = [];
 		}
-
+		
+		slackByDate[date].push(entry);
 		index += 1;
 	}
 
@@ -137,17 +143,25 @@ function getKeys(obj)
 	return result;
 };
 
-function isValidEntry(entry)
+function isValidAddress(ip, includeTokens, excludeTokens)
 {
-	return !document.getElementById('ignorePhone').checked ||
-		entry[2].toLowerCase().indexOf('phone') < 0;
-};
+	for (var i = 0; i < excludeTokens.length; i++)
+	{
+		if (ip.substring(0, excludeTokens[i].length) == excludeTokens[i])
+		{
+			return false;
+		}
+	}
 
-function isValidAddress(ip)
-{
-	var ipFilter = document.getElementById('ip').value;
+	for (var i = 0; i < includeTokens.length; i++)
+	{
+		if (ip.substring(0, includeTokens[i].length) == includeTokens[i])
+		{
+			return true;
+		}
+	}
 
-	return ip.substring(0, ipFilter.length) == ipFilter;
+	return false;
 };
 
 function process()
@@ -155,11 +169,20 @@ function process()
 	try
 	{
 		var year = document.getElementById('year').value;
+		var temp = document.getElementById('after').value;
+		var days = parseInt(document.getElementById('days').value);
+		var includeTokens = document.getElementById('include').value.split(' ');
+		var excludeTokens = document.getElementById('exclude').value.split(' ');
 		var logsByDate = parseSlack();
-		var lastIp = null;
+		var after = null;
 		var start = null;
 		var end = null;
 		var dates = {};
+
+		if (temp != '')
+		{
+			after = parseDate(temp);
+		}
 
 		for (var date in logsByDate)
 		{
@@ -169,7 +192,8 @@ function process()
 
 				for (var i = 0; i < logs.length; i++)
 				{
-					if (isValidAddress(logs[i][3]))
+					if ((after == null || parseDate(date) >= after) &&
+						isValidAddress(logs[i][3], includeTokens, excludeTokens))
 					{
 						end = date;
 
@@ -227,18 +251,13 @@ function process()
 					'?output=csv&fields=ip,connection.isp">' + allIps[i] + '</a>');
 			}
 
-			if (logins > 1 || (allIps.length > 0 && allIps[0] == lastIp))
-			{
-				total += 1;
-				result += '<tr><td valign="top" align="center">' + total + '</td>' +
-					'<td valign="top" align="center" style="white-space:nowrap;">' + key +
-					'</td><td valign="top" style="font-size:x-small;">' + getKeys(agents).join('<br>') +
-					'</td><td align="center" valign="top">' + logins +
-					'</td><td align="center" valign="top" style="font-size:x-small;">' +
-						ipLinks.join('<br>') + '</td></tr>';
-			}
-
-			lastIp = allIps[0];
+			total += 1;
+			result += '<tr><td valign="top" align="center">' + total + '</td>' +
+				'<td valign="top" align="center" style="white-space:nowrap;">' + key +
+				'</td><td valign="top">' + getKeys(agents).join('<br>') +
+				'</td><td align="center" valign="top">' + logins +
+				'</td><td align="center" valign="top">' +
+					ipLinks.join('<br>') + '</td></tr>';
 		}
 
 		result += '</tbody></table>';
@@ -250,11 +269,13 @@ function process()
 			today.getMinutes()).slice(-2) + ('0' + today.getSeconds()).slice(-2);
 		document.title = ts + '-' + pageTitle;
 		var label = document.getElementById('label').value;
+		var perc = Math.round(total / days * 1000) / 10;
 		document.getElementById('result').value = '<html><head><meta charset="UTF-8">' +
 			'<title>' + pageTitle + '</title></head>' + '<body><h3>' + pageTitle + '</h3>' +
-			result + '<br>Total ' + label + ': ' + total + ' Arbeitstage</body></html>';
+			result + '<br>Total ' + label + ': ' + total + ' von ' + days + ' Arbeitstagen (' + perc + '%)' +
+			'</body></html>';
 
-		console.log(label, start + '-' + end + ':', total);
+		console.log(label, start + '-' + end + ':', total + ' of ' + days, perc + '%');
 	}
 	catch (e)
 	{
@@ -267,28 +288,33 @@ function process()
 <body>
 <a href="http://my.slack.com/account/logs" target="_blank">Slack Access Log:</a>
 <br>
-<textarea id="slack" rows="10" cols="60" ondragover="handleDragOver(event);" ondrop="handleDrop(event);">
-</textarea>
+<textarea id="slack" rows="10" cols="80" style="font-family:monospace;white-space:normal;word-break:break-all;" 
+autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" ondragover="handleDragOver(event);"
+ondrop="handleDrop(event);"></textarea>
 <br><br>
-IP:
-<input id="ip" type="text" value="178." size="8">
-<input id="label" type="text" value="Obwalden" size="12">
+Filter:
+<input id="include" type="text" value="144. 178." size="8">
+Exclude:
+<input id="exclude" type="text" value="178.197." size="8">
 Year:
-<input id="year" type="text" size="5">
-<input type="checkbox" id="ignorePhone" checked="checked">
-Ignore Phone
-&nbsp;
-<button id="process" onclick="process();">Process</button>
+<input id="year" type="text" size="4">
+After:
+<input id="after" type="text" value="" size="10">
+Days:
+<input id="days" type="text" value="240" size="4">
+<input id="label" type="text" value="Obwalden" size="9">
+<button id="process" onclick="process();">Run</button>
 <br><br>
 Result:
 <br>
-<textarea id="result" rows="10" cols="60">
-</textarea>
+<textarea id="result" rows="10" cols="80" style="font-family:monospace;white-space:normal;word-break:break-all;" 
+autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" ondragover="handleDragOver(event);"
+ondrop="handleDrop(event);"></textarea>
 <br>
 <button onclick="printResult();">Print</button>
 <script>
 	var today = new Date();
-	document.getElementById('year').value = today.getFullYear() - 1;
+	document.getElementById('year').value = today.getFullYear();
 </script>
 </body>
 </html>

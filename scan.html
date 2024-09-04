@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+var title = 'Fingerscanner';
+document.title = title;
+
+function handleDrop(evt)
+{
+	evt.stopPropagation();
+	evt.preventDefault();
+
+	if (evt.dataTransfer.files.length > 0)
+	{
+		var file = evt.dataTransfer.files[0];
+		var reader = new FileReader();
+
+		reader.onload = function (e)
+		{
+			evt.target.value = e.target.result;
+		};
+
+		reader.readAsText(file);
+	}
+};
+
+function handleDragOver(evt)
+{
+	evt.stopPropagation();
+	evt.preventDefault();
+};
+
+function printResult()
+{
+    var printContents = document.getElementById('result').value;
+    var pageContents = document.body.innerHTML;
+
+	var scan = document.getElementById('scan').value;
+	var filter = document.getElementById('filter').value;
+
+	document.body.innerHTML = printContents;
+	window.print();
+	document.body.innerHTML = pageContents;
+
+	document.getElementById('scan').value = scan;
+	document.getElementById('filter').value = filter;
+	document.getElementById('result').value = printContents;
+};
+
+function copyToClipboard(containerid)
+{
+	if (window.getSelection)
+	{
+        var range = document.createRange();
+        range.selectNode(document.getElementById(containerid));
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+		document.execCommand("copy");
+		window.getSelection().removeAllRanges();
+    }
+};
+
+function dateString(date)
+{
+	return date.getDate() + '.' + (date.getMonth() + 1) +
+		'.' + date.getFullYear();
+};
+
+function parseScans()
+{
+	var div = document.createElement('div');
+	div.innerHTML = document.getElementById('scan').value;
+	var scanTable = div.getElementsByTagName('table')[0];
+	var scanBody = scanTable.getElementsByTagName('tbody')[0];
+	var scanRows = scanBody.getElementsByTagName('tr');
+	var scansByDate = {};
+
+	for (var i = scanRows.length - 1; i >= 0; i--)
+	{
+		var scanCells = scanRows[i].getElementsByTagName('td');
+		var text = scanCells[2].innerText.split('Text: Fingerscanner: ')[1];
+
+		if (text.indexOf('erkannt') > 0)
+		{
+			var ts = scanCells[0].innerText.split(' ').slice(2);
+			var eu_date = ts[0];
+			var parts = eu_date.split('.');
+			var datestring = dateString(new Date(parts[2]+'-'+parts[1]+'-'+parts[0]));
+
+			if (scansByDate[datestring] == null)
+			{
+				scansByDate[datestring] = [];
+			}
+
+			scansByDate[datestring].push({timestamp: ts, text: text});
+		}
+	}
+
+	return scansByDate;
+};
+
+function isValidEntry(entry, filterTokens)
+{
+	for (var i = 0; i < filterTokens.length; i++)
+	{
+		if (entry.text.indexOf('von ' + filterTokens[i] + ' auf') > 0)
+		{
+			return true;
+		}
+	}
+
+	return false;
+};
+
+function process()
+{
+	try
+	{
+		var filterTokens = document.getElementById('filter').value.split(' ');
+		var scansByDate = parseScans();
+		var start = null;
+		var end = null;
+		var dates = {};
+
+		for (var date in scansByDate)
+		{
+			var logs = scansByDate[date];
+
+			for (var i = 0; i < logs.length; i++)
+			{
+				if (isValidEntry(logs[i], filterTokens))
+				{
+					end = date;
+
+					if (start == null)
+					{
+						start = date;
+					}
+
+					if (dates[date] == null)
+					{
+						dates[date] = [];
+					}
+
+					dates[date].push(logs[i]);
+				}
+			}
+		}
+
+		var total = 0;
+		var result = '<table border="1" cellpadding="3" style="font-size:small;border-collapse:collapse;" width="100%">' +
+			'<thead><tr><td></td><td align="center">Date</td><td align="center">Text</td>' +
+			'<td align="center">Scans</td></tr></thead><tbody>';
+
+		for (var key in dates)
+		{
+			var entries = dates[key];
+			var agents = {};
+			var scans = 0;
+			var text = [];
+
+			for (var i = 0; i < entries.length; i++)
+			{
+				scans += 1;
+				text.push(entries[i].timestamp[1] + ' ' + entries[i].text);
+			}
+
+			total += 1;
+			result += '<tr><td valign="top" align="center">' + total + '</td>' +
+				'<td valign="top" align="center" style="white-space:nowrap;">' + key +
+				'</td><td valign="top" style="font-size:x-small;">' + text.join('<br>') +
+				'</td><td align="center" valign="top">' + scans +
+				'</td></tr>';
+		}
+
+		result += '</tbody></table>';
+
+		var today = new Date();
+		var pageTitle = title + ' draw.io AG ' + start + ' - ' + end;
+		var ts = String(today.getFullYear()) + ('0' + (today.getMonth() + 1)).slice(-2) +
+			('0' + today.getDate()).slice(-2) + ('0' + today.getHours()).slice(-2) + ('0' +
+			today.getMinutes()).slice(-2) + ('0' + today.getSeconds()).slice(-2);
+		document.title = ts + '-' + pageTitle;
+		document.getElementById('result').value = '<html><head><meta charset="UTF-8">' +
+			'<title>' + pageTitle + '</title></head><body><h3>' + pageTitle + '</h3>' +
+				result + '<br>Total: ' + total + ' Tage' +
+			'</body></html>';
+
+		console.log(start + '-' + end + ':', total);
+	}
+	catch (e)
+	{
+		console.error(e);
+		alert(e);
+	}
+};
+</script>
+</head>
+<body>
+<a href="https://d9c3o1j1f4h1.hbsecure.ch/?type=page&mode=category&view=list&building=wohnhaus&category=5zutritt&page=5fingerscanner"
+target="_blank">Fingerscanner Log:</a>
+<br>
+<textarea id="scan" rows="10" cols="60" style="font-family:monospace;white-space:normal;word-break:break-all;" 
+autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" ondragover="handleDragOver(event);"
+ondrop="handleDrop(event);"></textarea>
+</textarea>
+<br><br>
+Filter:
+<input id="filter" type="text" value="Herr Gaudenz" size="12">
+&nbsp;
+<button id="process" onclick="process();">Run</button>
+<br><br>
+Result:
+<br>
+<textarea id="result" rows="10" cols="60" style="font-family:monospace;white-space:normal;word-break:break-all;" 
+autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" ondragover="handleDragOver(event);"
+ondrop="handleDrop(event);"></textarea>
+<br>
+<button onclick="printResult();">Print</button>
+<br><br>
+Execute in browser console:
+<pre id="code" style="width:500px;white-space:normal;word-break:break-all;font-size:x-small;">
+console.log(document.querySelector('.uk-table.uk-table-divider.dh-table-responsive.dh-sticky').outerHTML);
+</pre>
+<button onclick="copyToClipboard('code');">Copy</button>
+</body>
+</html>

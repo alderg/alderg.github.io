@@ -140,9 +140,9 @@ function process()
 	var partial = checkCalendar(false);
 
 	document.getElementById('result').value =
-		today + (today.length > 0 ? '\n\n' : '') +	
-		partial + (partial.length > 0 ? '\n\n' : '') +
-		checkCalendar(true);
+		checkCalendar(true) + '\n\n' +
+		partial + (partial.length > 0 ?
+		'\n\n' : '') + today;
 };
 </script>
 </head>
@@ -156,7 +156,7 @@ function process()
 <br><br>
 Result:
 <br>
-<textarea id="result" rows="18" cols="60">
+<textarea id="result" rows="24" cols="60">
 </textarea>
 <script>
 	var today = new Date();

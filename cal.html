@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
 <script>
-
 var title = 'Kalender';
 document.title = title;
 
@@ -56,13 +56,11 @@ function checkCalendar(fullYear, before)
 
 		index += 2;
 
-		while (calLines[index] == 'All day' ||
-			calLines[index] == 'Ganztägig')
+		while (calLines[index] == 'All day' || calLines[index] == 'Ganztägig')
 		{
 			index += 1;
 		}
 		
-		index += 1;
 		tokens = calLines[index].split(":");
 		index += 1;
 

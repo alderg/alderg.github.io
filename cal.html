@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <script>
 var title = 'Kalender';
+var months = ['Jan.', 'Feb.', 'Mär.', 'Apr.', 'Mai', 'Jun.', 'Jul.',
+	'Aug.', 'Sep.', 'Okt.', 'Nov.', 'Dez.'];
 document.title = title;
 
 function handleDrop(evt)
@@ -40,28 +42,44 @@ function handleDragOver(evt)
 	evt.preventDefault();
 };
 
+function parseDate(date)
+{
+	var tokens = date.split(' ');
+	var day = parseInt(tokens[0]);
+	var month = months.indexOf(tokens[1]);
+	var year = parseInt(tokens[2]);
+
+	if (month == -1)
+	{
+		alert('Invalid date: ' + date);
+	}
+
+	return new Date(year, month, day + 1);
+};
+
 function checkCalendar(fullYear, before)
 {
 	var index = 0;
 	var total = 0;
 	var locations = {};
-	var calLines = document.getElementById("calendar").value.split("\n");
+	var calLines = document.getElementById('calendar').value.split('\n');
 	var last = new Date(0);
 	var today = new Date();
 
 	while (index < calLines.length - 1)
 	{
-		var ts = new Date(calLines[index] + calLines[index + 1].split(",")[0]);
+		var ts = parseDate(calLines[index] + ' ' + calLines[index + 1].split(',')[0]);
 		var location = null;
 
 		index += 2;
 
-		while (calLines[index] == 'All day' || calLines[index] == 'Ganztägig')
+		while (calLines[index] == 'All day' ||
+			calLines[index] == 'Ganztägig')
 		{
 			index += 1;
 		}
 		
-		tokens = calLines[index].split(":");
+		tokens = calLines[index].split(':');
 		index += 1;
 
 		if (before == null || ts <= before)
@@ -73,7 +91,7 @@ function checkCalendar(fullYear, before)
 
 			if (location != 'OW')
 			{
-				location = tokens[1].split("(")[0].trim();
+				location = tokens[1].split('(')[0].trim();
 			}
 			
 			if (locations[location] == null)
@@ -126,7 +144,8 @@ function checkCalendar(fullYear, before)
 		if (key == 'OW')
 		{
 			result[result.length - 1] += ' Work: ' +
-				Math.round(value * 1000 / 240) / 10 + '%';
+				Math.round(value * 1000 / 240) / 10 + '%' +
+				' (' + (value - 96) + ' Overtime)';
 
 		}
 	}

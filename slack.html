@@ -275,8 +275,9 @@ function process()
 			'<title>' + pageTitle + '</title></head>' + '<body><h3>' + pageTitle + '</h3>' +
 			result + '<br>Total ' + label + ': ' + total + ' von ' + days + ' Arbeitstagen (' + perc + '%)' +
 			'</body></html>';
-
-		console.log(label, start + '-' + end + ':', total + ' of ' + days, perc + '%');
+		document.getElementById('summary').innerHTML =
+			label + ' ' + start + ' - ' + end + ': ' +
+			total + ' of ' + days + ' (' + perc + '%)';
 	}
 	catch (e)
 	{
@@ -293,6 +294,7 @@ function process()
 autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" ondragover="handleDragOver(event);"
 ondrop="handleDrop(event);"></textarea>
 <br><br>
+<button id="process" onclick="process();">Run</button>
 Filter:
 <input id="include" type="text" value="144. 178." size="8">
 Exclude:
@@ -304,9 +306,8 @@ After:
 Days:
 <input id="days" type="text" value="240" size="4">
 <input id="label" type="text" value="Obwalden" size="9">
-<button id="process" onclick="process();">Run</button>
 <br><br>
-Result:
+Result: <span style="font-style:italic;" id="summary"></span>
 <br>
 <textarea id="result" rows="10" cols="80" style="font-family:monospace;white-space:normal;word-break:break-all;" 
 autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" ondragover="handleDragOver(event);"

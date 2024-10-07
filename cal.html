@@ -73,35 +73,39 @@ function checkCalendar(fullYear, before)
 
 		index += 2;
 
-		while (calLines[index] == 'All day' ||
-			calLines[index] == 'Ganztägig')
+		do
 		{
-			index += 1;
-		}
-		
-		tokens = calLines[index].split(':');
-		index += 1;
-
-		if (before == null || ts <= before)
-		{
-			if (ts > last)
+			while (calLines[index] == 'All day' ||
+				calLines[index] == 'Ganztägig')
 			{
-				last = ts;
-			}
-
-			if (location != 'OW')
-			{
-				location = tokens[1].split('(')[0].trim();
+				index += 1;
 			}
 			
-			if (locations[location] == null)
-			{
-				locations[location] = 0;
-			}
+			tokens = calLines[index].split(':');
+			index += 1;
 
-			locations[location] += 1;
-			total += 1;
-		}
+			if (before == null || ts <= before)
+			{
+				if (ts > last)
+				{
+					last = ts;
+				}
+
+				if (location != 'OW')
+				{
+					location = tokens[1].split('(')[0].trim();
+				}
+				
+				if (locations[location] == null)
+				{
+					locations[location] = 0;
+				}
+
+				locations[location] += 1;
+				total += 1;
+			}
+		} while (calLines[index] == 'All day' ||
+			calLines[index] == 'Ganztägig')
 	}
 
 	if (!fullYear && last.getFullYear() == today.getFullYear())
@@ -132,7 +136,7 @@ function checkCalendar(fullYear, before)
 	var result = [];
 	result.push('Von: ' + start.getDate() + '.' + (start.getMonth()+1) + '.' + start.getFullYear() +
 		' bis: ' + last.getDate() + '.' + (last.getMonth()+1) + '.' + last.getFullYear() +
-		' (' + days + ' Tage)');
+		' (' + days + ' Tage, ' + total + ' Einträge)');
 
 	for (var i = 0; i < json.length; i++)
 	{
@@ -159,9 +163,8 @@ function process()
 	var partial = checkCalendar(false);
 
 	document.getElementById('result').value =
-		checkCalendar(true) + '\n\n' +
-		partial + (partial.length > 0 ?
-		'\n\n' : '') + today;
+		checkCalendar(true) + (partial.length > 0 ?
+		'\n\n' + partial +  '\n\n' : '') + today + '\n';
 };
 </script>
 </head>

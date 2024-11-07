@@ -4,43 +4,9 @@
 <meta charset="UTF-8">
 <script>
 var title = 'Kalender';
-var months = ['Jan.', 'Feb.', 'Mär.', 'Apr.', 'Mai', 'Jun.', 'Jul.',
-	'Aug.', 'Sep.', 'Okt.', 'Nov.', 'Dez.'];
+var months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli',
+	'August', 'September', 'Oktober', 'November', 'Dezember'];
 document.title = title;
-
-function handleDrop(evt)
-{
-	evt.stopPropagation();
-	evt.preventDefault();
-
-	if (evt.dataTransfer.files.length > 0)
-	{
-		var file = evt.dataTransfer.files[0];
-
-		var reader = new FileReader();
-		reader.onload = function (e)
-		{
-			evt.target.value = e.target.result;
-
-			if (evt.target == document.getElementById('calendar'))
-			{
-				calendarChanged();
-			}
-			else if (evt.target == document.getElementById('scanner'))
-			{
-				scannerChanged();
-			}
-		};
-
-		reader.readAsText(file);
-	}
-};
-
-function handleDragOver(evt)
-{
-	evt.stopPropagation();
-	evt.preventDefault();
-};
 
 function parseDate(date)
 {
@@ -51,7 +17,7 @@ function parseDate(date)
 
 	if (month == -1)
 	{
-		alert('Invalid date: ' + date);
+		throw('Invalid date: ' + date);
 	}
 
 	return new Date(year, month, day + 1);
@@ -62,50 +28,30 @@ function checkCalendar(fullYear, before)
 	var index = 0;
 	var total = 0;
 	var locations = {};
-	var calLines = document.getElementById('calendar').value.split('\n');
+	var calendar = JSON.parse(document.getElementById('calendar').value);
 	var last = new Date(0);
 	var today = new Date();
 
-	while (index < calLines.length - 1)
+	for (var index = 0; index < calendar.length; index++)
 	{
-		var ts = parseDate(calLines[index] + ' ' + calLines[index + 1].split(',')[0]);
-		var location = null;
+		var ts = parseDate(calendar[index][0]);
+		var location = calendar[index][1];
 
-		index += 2;
-
-		do
+		if (before == null || ts <= before)
 		{
-			while (calLines[index] == 'All day' ||
-				calLines[index] == 'Ganztägig')
+			if (ts > last)
 			{
-				index += 1;
+				last = ts;
 			}
 			
-			tokens = calLines[index].split(':');
-			index += 1;
-
-			if (before == null || ts <= before)
+			if (locations[location] == null)
 			{
-				if (ts > last)
-				{
-					last = ts;
-				}
-
-				if (location != 'OW')
-				{
-					location = tokens[1].split('(')[0].trim();
-				}
-				
-				if (locations[location] == null)
-				{
-					locations[location] = 0;
-				}
-
-				locations[location] += 1;
-				total += 1;
+				locations[location] = 0;
 			}
-		} while (calLines[index] == 'All day' ||
-			calLines[index] == 'Ganztägig')
+
+			locations[location] += 1;
+			total += 1;
+		}
 	}
 
 	if (!fullYear && last.getFullYear() == today.getFullYear())
@@ -166,25 +112,45 @@ function process()
 		checkCalendar(true) + (partial.length > 0 ?
 		'\n\n' + partial +  '\n\n' : '') + today + '\n';
 };
+
+function yearChanged()
+{
+	var year = document.getElementById('year').value;
+	document.getElementById('calendarLink').href = 'https://calendar.google.com/calendar/u/0/r/' +
+		'search?q=Gaudenz%3A&cal=Y2FzYXdlcm5saUBnbWFpbC5jb20&start=' + year + '0101&end=' + year + '1231';
+	document.getElementById('calendar').value =
+		'var a=[];\n' +
+		'[].forEach.call(document.querySelectorAll("[data-datekey]"), (elt) => {\n' +
+		'var x = elt.getElementsByTagName("button")[0].getAttribute("aria-label").split(",").splice(0,2).join(",");\n' +
+		'var y = elt.firstChild.firstChild.nextSibling.firstChild.nextSibling.firstChild.getAttribute("aria-label");\n' +
+		'var temp = y.indexOf(" ("); temp = (temp == -1) ? y.indexOf(", Kalender") : temp;\n' +
+		'a.push([x.split(" ").splice(1).join(" ") + " " + ' + year + ',' +
+		'y.substring(y.indexOf(": ") + 2, temp)])' +
+		'});\n' +
+		'a;';
+};
 </script>
 </head>
 <body>
-<a href="" id="calendarLink" target="_blank">Google Kalender Entries:</a>
+1. Click on the link: <a href="" id="calendarLink" target="_blank">Google Kalender Entries</a><br>
+2. Paste the following into the console<br>
+3. Right click the result, copy object and paste here
 <br>
-<textarea id="calendar" rows="10" cols="60" onchange="process();" ondragover="handleDragOver(event);" ondrop="handleDrop(event);">
+<textarea id="calendar" rows="10" cols="110">
 </textarea>
 <br><br>
 <button id="process" onclick="process();">Run</button>
+Year:
+<input id="year" type="text" size="4" onchange="yearChanged()">
 <br><br>
 Result:
 <br>
-<textarea id="result" rows="24" cols="60">
+<textarea id="result" rows="32" cols="110">
 </textarea>
 <script>
-	var today = new Date();
-	var y = today.getFullYear();
-	document.getElementById('calendarLink').href = 'https://calendar.google.com/calendar/u/0/r/' +
-		'search?q=Gaudenz%3A&cal=Y2FzYXdlcm5saUBnbWFpbC5jb20&start=' + y + '0101&end=' + y + '1231';
+	var year = new Date().getFullYear();
+	document.getElementById('year').value = year;
+	yearChanged();
 </script>
 </body>
 </html>

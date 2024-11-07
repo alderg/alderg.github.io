@@ -90,14 +90,6 @@ function checkCalendar(fullYear, before)
 		var value = json[i].value;
 		var perc = Math.round(((value * 1000) / days)) / 10;
 		result.push(key + ': ' + value + ' (' + perc + '%)');
-		
-		if (key == 'OW')
-		{
-			result[result.length - 1] += ' Work: ' +
-				Math.round(value * 1000 / 240) / 10 + '%' +
-				' (' + (value - 96) + ' Overtime)';
-
-		}
 	}
 
 	return result.join('\n');
@@ -105,12 +97,19 @@ function checkCalendar(fullYear, before)
 
 function process()
 {
-	var today = checkCalendar(false, new Date());
-	var partial = checkCalendar(false);
+	try
+	{
+		var today = checkCalendar(false, new Date());
+		var partial = checkCalendar(false);
 
-	document.getElementById('result').value =
-		checkCalendar(true) + (partial.length > 0 ?
-		'\n\n' + partial +  '\n\n' : '') + today + '\n';
+		document.getElementById('result').value =
+			checkCalendar(true) + (partial.length > 0 ?
+			'\n\n' + partial +  '\n\n' : '') + today + '\n';
+	}
+	catch (e)
+	{
+		document.getElementById('result').value = e;
+	}
 };
 
 function yearChanged()
@@ -132,20 +131,22 @@ function yearChanged()
 </script>
 </head>
 <body>
-1. Click on the link: <a href="" id="calendarLink" target="_blank">Google Kalender Entries</a><br>
-2. Paste the following into the console<br>
-3. Right click the result, copy object and paste here
+1. Enter year: <input id="year" type="text" size="4" onchange="yearChanged()">
+<br>
+2. Click on the link: <a href="" id="calendarLink" target="_blank">Google Kalender Entries</a>
+<br>
+3. Paste the following into the console
+<br>
+4. Right click the result, copy object and paste here
 <br>
 <textarea id="calendar" rows="10" cols="110">
 </textarea>
 <br><br>
-<button id="process" onclick="process();">Run</button>
-Year:
-<input id="year" type="text" size="4" onchange="yearChanged()">
+<button id="process" onclick="process();">Process</button>
 <br><br>
 Result:
 <br>
-<textarea id="result" rows="32" cols="110">
+<textarea id="result" rows="28" cols="110">
 </textarea>
 <script>
 	var year = new Date().getFullYear();

@@ -1,7 +1,50 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8" />
+<style type="text/css">
+	@media only screen {
+		body {
+			font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans",
+				Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+			background: light-dark(rgb(255, 255, 255), rgb(18, 18, 18));
+			color: light-dark(rgb(18, 18, 18), white);
+			margin: 10px 5% 10px 5%;
+			color-scheme: dark;
+			font-size: 12px;
+		}
+		textarea {
+			box-sizing: border-box;
+			font-family: monospace;
+			color: lightgray;
+			resize: vertical;
+			font-size: inherit;
+			border-radius: 4px;
+			padding: 4px;
+		}
+		button {
+			background: #1a4cad;
+			border-radius: 4px;
+			padding: 10px;
+			border: none;
+		}
+		button {
+			cursor: default;
+			opacity: 0.9;
+		}
+		button:hover:not(:disabled) {
+			opacity: 1;
+		}
+		button:active:not(:disabled) {
+			filter:invert(1);
+		}
+		input {
+			padding: 2px 6px;
+			margin: 0 0 0 4px;
+			font-size: inherit;
+		}
+	}
+</style>
 <script>
 var title = 'Logbuch';
 document.title = title;
@@ -19,6 +62,8 @@ function handleDrop(evt)
 		reader.onload = function (e)
 		{
 			evt.target.value = e.target.result;
+			document.getElementById('process').disabled =
+				document.getElementById('slack').value.length == 0;
 		};
 
 		reader.readAsText(file);
@@ -33,29 +78,10 @@ function handleDragOver(evt)
 
 function printResult()
 {
-    var printContents = document.getElementById('result').value;
-    var pageContents = document.body.innerHTML;
-
-	var slack = document.getElementById('slack').value;
-	var label = document.getElementById('label').value;
-	var include = document.getElementById('include').value;
-	var exclude = document.getElementById('exclude').value;
-	var year = document.getElementById('year').value;
-	var after = document.getElementById('after').value;
-	var days = document.getElementById('days').value;
-
-	document.body.innerHTML = printContents;
-	window.print();
-	document.body.innerHTML = pageContents;
-
-	document.getElementById('slack').value = slack;
-	document.getElementById('label').value = label;
-	document.getElementById('include').value = include;
-	document.getElementById('exclude').value = exclude;
-	document.getElementById('year').value = year;
-	document.getElementById('after').value = after;
-	document.getElementById('days').value = days;
-	document.getElementById('result').value = printContents;
+	var w = window.open();
+	w.document.write(document.getElementById('result').value);
+	w.print();
+	w.close();
 };
 
 function dateString(date)
@@ -169,32 +195,29 @@ function process()
 {
 	try
 	{
-		var year = document.getElementById('year').value;
-		var temp = document.getElementById('after').value;
+		var from = parseDate(document.getElementById('from').value);
+		var to = parseDate(document.getElementById('to').value);
 		var days = parseInt(document.getElementById('days').value);
-		var includeTokens = document.getElementById('include').value.split(' ');
-		var excludeTokens = document.getElementById('exclude').value.split(' ');
+		var include = document.getElementById('include').value.split(' ');
+		var exclude = document.getElementById('exclude').value.split(' ');
 		var logsByDate = parseSlack();
 		var after = null;
 		var start = null;
 		var end = null;
 		var dates = {};
 
-		if (temp != '')
-		{
-			after = parseDate(temp);
-		}
-
 		for (var date in logsByDate)
 		{
-			if (date.split('.')[2] == year)
+			var ts = parseDate(date);
+
+			if (ts >= from && ts <= to)
 			{
 				var logs = logsByDate[date];
 
 				for (var i = 0; i < logs.length; i++)
 				{
-					if ((after == null || parseDate(date) >= after) &&
-						isValidAddress(logs[i][3], includeTokens, excludeTokens))
+					if (isValidAddress(logs[i][3],
+						include, exclude))
 					{
 						end = date;
 
@@ -272,12 +295,13 @@ function process()
 		var label = document.getElementById('label').value;
 		var perc = Math.round(total / days * 1000) / 10;
 		document.getElementById('result').value = '<html><head><meta charset="UTF-8">' +
-			'<title>' + pageTitle + '</title></head>' + '<body><h3>' + pageTitle + '</h3>' +
-			result + '<br>Total ' + label + ': ' + total + ' von ' + days + ' Arbeitstagen (' + perc + '%)' +
-			'</body></html>';
+			'<title>' + pageTitle + '</title></head>' + '<body><h3 style="margin-bottom:6px;">' + pageTitle + '</h3>' +
+			result + '<div style="margin-top:8px;">Total ' + label + ': ' + total + ' von ' + days +
+			' Arbeitstagen (' + perc + '%)' + '</div></body></html>';
 		document.getElementById('summary').innerHTML =
 			label + ' ' + start + ' - ' + end + ': ' +
-			total + ' of ' + days + ' (' + perc + '%)';
+			total + ' of ' + days + ' workdays (' + perc + '%)';
+		document.getElementById('print').disabled = false;
 	}
 	catch (e)
 	{
@@ -288,35 +312,75 @@ function process()
 </script>
 </head>
 <body>
-<a href="http://my.slack.com/account/logs" target="_blank">Slack Access Log:</a>
-<br>
-<textarea id="slack" rows="10" cols="80" style="font-family:monospace;white-space:normal;word-break:break-all;" 
-autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" ondragover="handleDragOver(event);"
-ondrop="handleDrop(event);"></textarea>
-<br><br>
-<button id="process" onclick="process();">Run</button>
-Filter:
-<input id="include" type="text" value="144. 178." size="8">
-Exclude:
-<input id="exclude" type="text" value="178.197." size="8">
-Year:
-<input id="year" type="text" size="4">
-After:
-<input id="after" type="text" value="" size="10">
-Days:
-<input id="days" type="text" value="240" size="4">
-<input id="label" type="text" value="Obwalden" size="9">
-<br><br>
-Result: <span style="font-style:italic;" id="summary"></span>
-<br>
-<textarea id="result" rows="10" cols="80" style="font-family:monospace;white-space:normal;word-break:break-all;" 
-autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" ondragover="handleDragOver(event);"
-ondrop="handleDrop(event);"></textarea>
-<br>
-<button onclick="printResult();">Print</button>
+<div style="display:flex;opacity:0.9;align-items:center;padding:20px 20px 10px 20px;">
+	<svg viewBox="24 26 68 68" style="width:28px;display:inline-block;">
+	<line y2="72.394" x2="41.061" y1="43.384" x1="58.069" stroke-miterlimit="10" stroke-width="3.5528"
+		stroke="currentColor" fill="none" />
+	<line y2="72.394" x2="75.076" y1="43.384" x1="58.068" stroke-miterlimit="10" stroke-width="3.5008"
+		stroke="currentColor" fill="none" />
+	<path
+		d="M52.773,77.084c0,1.954-1.599,3.553-3.553,3.553H36.999c-1.954,0-3.553-1.599-3.553-3.553v-9.379c0-1.954,1.599-3.553,3.553-3.553h12.222c1.954,0,3.553,1.599,3.553,3.553V77.084z"
+		fill="currentColor" />
+	<path
+		d="M67.762,48.074c0,1.954-1.599,3.553-3.553,3.553H51.988c-1.954,0-3.553-1.599-3.553-3.553v-9.379c0-1.954,1.599-3.553,3.553-3.553H64.21c1.954,0,3.553,1.599,3.553,3.553V48.074z"
+		fill="currentColor" />
+	<path
+		d="M82.752,77.084c0,1.954-1.599,3.553-3.553,3.553H66.977c-1.954,0-3.553-1.599-3.553-3.553v-9.379c0-1.954,1.599-3.553,3.553-3.553h12.222c1.954,0,3.553,1.599,3.553,3.553V77.084z"
+		fill="currentColor" />
+	</svg>
+	<span style="font-family:Helvetica;font-weight:700;font-size:20px;margin-left:4px;">draw.io</span>
+</div>
+<div style="display:block;align-items:center;padding:20px;">
+	<textarea id="slack" style="width:100%;height:120px;"
+	spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" ondragover="handleDragOver(event);" ondrop="handleDrop(event);"
+	placeholder="Paste Slack access log here."></textarea>
+	<div style="position:relative;display:flex;align-items:center;justify-items:stretch;padding:4px 0 10px 0;white-space:nowrap;">
+		<div style="opacity:0.5;">
+			Include: <input id="include" type="text" value="144. 178." size="8">
+		</div>
+		<div style="opacity:0.5;margin-left:10px;">
+			Exclude: <input id="exclude" type="text" value="178.197." size="8">
+		</div>
+		<div style="opacity:0.5;margin-left:10px;">
+			From: <input id="from" type="text" size="10">
+		</div>
+		<div style="opacity:0.5;margin-left:10px;">
+			To: <input id="to" type="text" size="10">
+		</div>
+		<div style="opacity:0.5;margin-left:10px;">
+			Days: <input id="days" type="text" value="240" size="3">
+		</div>
+		<div style="opacity:0.5;margin-left:10px;">
+			Place: <input id="label" type="text" value="Obwalden" size="8">
+		</div>
+		<button style="position:relative;margin-left:auto;" onclick="window.open('http://my.slack.com/account/logs');">
+			Get Access Log
+		</button>
+		<button id="process" onclick="process();" disabled="disabled" style="position:relative;margin-left:10px;">
+			Generate Report
+		</button>
+	</div>
+	<textarea id="result" style="width:100%;height:300px;background:transparent;" spellcheck="false" autocomplete="off"
+	autocorrect="off" autocapitalize="off" ondragover="handleDragOver(event);" ondrop="handleDrop(event);" disabled="disabled"></textarea>
+	<div style="position:relative;display:flex;align-items:center;justify-items:stretch;padding:4px 0 10px 0;">
+		<div style="opacity:0.5;margin-left:auto;" id="summary"></div>
+		<button disabled="disabled" onclick="printResult();" id="print" style="position:relative;margin-left:10px;">
+			Print Report
+		</button>
+	</div>
+</div>
 <script>
 	var today = new Date();
-	document.getElementById('year').value = today.getFullYear();
+	document.getElementById('from').value = '1.1.' + today.getFullYear();
+	document.getElementById('to').value = '31.12.' + today.getFullYear();
+	document.getElementById('slack').focus();
+
+	// Enabled process button if input is not empty
+	document.getElementById('slack').oninput = function()
+	{
+		document.getElementById('process').disabled =
+			document.getElementById('slack').value.length == 0;
+	};
 </script>
 </body>
 </html>

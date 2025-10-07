@@ -38,8 +38,8 @@ function printResult()
 {
 	var w = window.open();
 	w.document.write(document.getElementById('result').value);
+	w.document.close();
 	w.print();
-	w.close();
 };
 
 function dateString(date)

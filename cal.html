@@ -20,7 +20,7 @@ function parseDate(date)
 		throw('Invalid date: ' + date);
 	}
 
-	return new Date(year, month, day + 1);
+	return new Date(year, month, day);
 };
 
 function checkCalendar(fullYear, before)
@@ -80,8 +80,9 @@ function checkCalendar(fullYear, before)
 	json.sort(function(a, b){return b.value - a.value});
 
 	var result = [];
-	result.push('Von: ' + start.getDate() + '.' + (start.getMonth()+1) + '.' + start.getFullYear() +
-		' bis: ' + last.getDate() + '.' + (last.getMonth()+1) + '.' + last.getFullYear() +
+	result.push(((fullYear) ? 'Jahr: ' + start.getFullYear() :
+		'Von: ' + start.getDate() + '.' + (start.getMonth() + 1) + '.' + start.getFullYear() +
+		' bis: ' + last.getDate() + '.' + (last.getMonth() + 1) + '.' + last.getFullYear()) +
 		' (' + days + ' Tage, ' + total + ' Einträge)');
 
 	for (var i = 0; i < json.length; i++)
@@ -92,7 +93,7 @@ function checkCalendar(fullYear, before)
 		result.push(key + ': ' + value + ' (' + perc + '%)');
 	}
 
-	return result.join('\n');
+	return result.join('\n') + '\n';
 };
 
 function process()

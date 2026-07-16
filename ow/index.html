@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Pearl of Engelberg</title>
+<meta name="description" content="Private Maisonette-Wohnung in Engelberg – Zentralschweiz.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2322211f'/%3E%3Cpath d='M12 44 L26 20 L34 33 L40 24 L52 44 Z' fill='%23faf8f5'/%3E%3Ccircle cx='45' cy='16' r='4' fill='%23c8a36a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300&amp;family=Inter:wght@300;400;500&amp;display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf8f5;
+  --ink:#22211f;
+  --muted:#6f6a61;
+  --accent:#b5622e;
+  --gold:#c8a36a;
+  --line:#e6e1d8;
+  --card:#ffffff;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;font-weight:300;line-height:1.65;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:400;line-height:1.15}
+img{display:block;max-width:100%}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+
+/* Header */
+header{position:fixed;top:0;left:0;right:0;z-index:50;transition:background .35s,box-shadow .35s;color:#fff}
+header.solid{background:rgba(250,248,245,.92);backdrop-filter:blur(10px);box-shadow:0 1px 0 var(--line);color:var(--ink)}
+.nav{display:flex;align-items:center;gap:18px;max-width:1200px;margin:0 auto;padding:14px 24px}
+.brand{font-family:'Fraunces',serif;font-size:1.15rem;letter-spacing:.04em;color:inherit;white-space:nowrap}
+.brand:hover{text-decoration:none}
+nav.links{margin-left:auto;display:flex;gap:22px;overflow-x:auto;scrollbar-width:none}
+nav.links::-webkit-scrollbar{display:none}
+nav.links a{color:inherit;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;opacity:.85;white-space:nowrap}
+nav.links a:hover{opacity:1;text-decoration:none}
+
+/* Hero */
+.hero{position:relative;min-height:100svh;display:flex;align-items:flex-end;color:#fff;overflow:hidden}
+.hero img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 42%}
+.hero .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,18,15,.35) 0%,rgba(20,18,15,0) 35%,rgba(20,18,15,.55) 100%)}
+.hero .inner{position:relative;width:100%;max-width:1200px;margin:0 auto;padding:0 24px 9vh}
+.hero .kicker{font-size:.8rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.hero h1{font-size:clamp(2.6rem,7vw,5rem);font-weight:300;text-shadow:0 2px 24px rgba(0,0,0,.35)}
+.hero p.sub{margin-top:14px;font-size:clamp(1rem,2vw,1.2rem);max-width:34em;color:#f2ede6;text-shadow:0 1px 12px rgba(0,0,0,.45)}
+.hero .down{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);opacity:.8}
+.hero .down svg{animation:drift 2.2s ease-in-out infinite}
+@keyframes drift{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+
+/* Sections */
+section{padding:96px 0}
+.kicker{font-size:.78rem;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+h2{font-size:clamp(1.9rem,4vw,2.7rem);margin-bottom:22px}
+.lead{font-size:1.08rem;max-width:44em;color:#3d3a35}
+.two{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+.two .txt p+p{margin-top:16px}
+.frame{border-radius:10px;overflow:hidden;box-shadow:0 18px 50px rgba(34,33,31,.16)}
+
+/* Facts */
+.facts{background:#f1ede6;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.facts-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:40px}
+.fact{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:26px 20px;text-align:center}
+.fact svg{width:34px;height:34px;margin:0 auto 12px;stroke:var(--accent);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.fact h3{font-size:1.02rem;margin-bottom:4px}
+.fact p{font-size:.86rem;color:var(--muted)}
+
+/* Gallery */
+.masonry{columns:3 300px;column-gap:14px;margin-top:44px}
+.masonry figure{break-inside:avoid;margin:0 0 14px;position:relative;border-radius:8px;overflow:hidden;cursor:zoom-in;background:#e9e4dc}
+.masonry img{width:100%;transition:transform .5s ease,opacity .5s}
+.masonry figure:hover img{transform:scale(1.03)}
+.masonry figcaption{position:absolute;left:0;right:0;bottom:0;padding:26px 14px 10px;font-size:.78rem;letter-spacing:.08em;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.45));opacity:0;transition:opacity .35s}
+.masonry figure:hover figcaption{opacity:1}
+
+/* Lightbox */
+.lb{position:fixed;inset:0;z-index:100;background:rgba(18,16,13,.94);display:none;align-items:center;justify-content:center}
+.lb.open{display:flex}
+.lb img{max-width:92vw;max-height:86vh;border-radius:6px;box-shadow:0 10px 60px rgba(0,0,0,.5)}
+.lb .cap{position:absolute;bottom:22px;left:0;right:0;text-align:center;color:#cfc8bd;font-size:.85rem;letter-spacing:.08em}
+.lb button{position:absolute;background:none;border:none;color:#fff;cursor:pointer;padding:16px;opacity:.75;transition:opacity .2s}
+.lb button:hover{opacity:1}
+.lb .close{top:14px;right:14px}
+.lb .prev{left:6px;top:50%;transform:translateY(-50%)}
+.lb .next{right:6px;top:50%;transform:translateY(-50%)}
+.lb svg{width:30px;height:30px;stroke:#fff;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* Video */
+.video{background:#22211f;color:#efeae2}
+.video .kicker{color:var(--gold)}
+.video h2{color:#faf8f5}
+.video .two{align-items:center}
+.video video{width:100%;max-width:400px;margin:0 auto;border-radius:14px;box-shadow:0 24px 70px rgba(0,0,0,.55);display:block}
+.video p{color:#c9c2b6}
+.video p+p{margin-top:16px}
+
+/* Terrasse */
+.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:44px}
+.tgrid .wide{grid-column:1/-1}
+@media (max-width:700px){.tgrid{grid-template-columns:1fr}}
+
+/* Quote */
+.quote{padding:110px 24px;text-align:center;background:linear-gradient(180deg,#f1ede6,#faf8f5)}
+.quote p{font-family:'Fraunces',serif;font-style:italic;font-weight:300;font-size:clamp(1.4rem,3vw,2rem);max-width:26em;margin:0 auto;color:#4a463f}
+.quote p.attr{font-family:'Inter',sans-serif;font-style:normal;font-size:.85rem;letter-spacing:.12em;color:var(--muted);margin-top:18px}
+
+/* Surroundings */
+.banner{margin:44px 0 0;position:relative;border-radius:10px;overflow:hidden}
+.banner img{width:100%;height:min(62vh,560px);object-fit:cover}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:26px 22px;display:flex;flex-direction:column}
+.card h3{font-size:1.15rem;margin-bottom:10px}
+.card p{font-size:.9rem;color:#55514a;flex:1}
+.card a{display:inline-block;margin-top:14px;font-size:.8rem;letter-spacing:.18em;text-transform:uppercase}
+
+/* Travel */
+.travel{background:#f1ede6;border-top:1px solid var(--line)}
+.travel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:40px}
+.travel .card h3{font-size:1.05rem}
+.travel .card p{font-size:.9rem}
+.map{margin-top:44px;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+.map iframe{display:block;width:100%;height:420px;border:0;filter:saturate(.85)}
+
+/* Footer */
+footer{padding:48px 24px;text-align:center;color:var(--muted);font-size:.85rem}
+footer .peak{font-family:'Fraunces',serif;font-size:1.05rem;color:var(--ink);margin-bottom:6px}
+
+/* Reveal */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  .reveal{opacity:1;transform:none;transition:none}
+  .hero .down svg{animation:none}
+}
+
+@media (max-width:900px){
+  section{padding:72px 0}
+  .two{grid-template-columns:1fr;gap:36px}
+  .facts-grid{grid-template-columns:repeat(2,1fr)}
+  .cards{grid-template-columns:repeat(2,1fr)}
+  .travel-grid{grid-template-columns:1fr}
+}
+@media (max-width:520px){
+  .cards{grid-template-columns:1fr}
+  .facts-grid{gap:10px}
+  .fact{padding:20px 12px}
+}
+</style>
+</head>
+<body>
+
+<header id="top">
+  <div class="nav">
+    <a class="brand" href="#top">Pearl of Engelberg</a>
+    <nav class="links">
+      <a href="#wohnung">Wohnung</a>
+      <a href="#galerie">Galerie</a>
+      <a href="#rundgang">Rundgang</a>
+      <a href="#terrasse">Terrasse</a>
+      <a href="#umgebung">Umgebung</a>
+      <a href="#anreise">Anreise</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero -->
+<div class="hero">
+  <img class="bg" src="images/hero.jpg" alt="Loggia mit Blick auf die Engelberger Bergwelt" fetchpriority="high">
+  <div class="shade"></div>
+  <div class="inner">
+    <p class="kicker">Engelberg &middot; Zentralschweiz &middot; 1'100 m ü. M.</p>
+    <h1>Pearl of Engelberg</h1>
+    <p class="sub">Eine Maisonette-Wohnung hoch über dem Dorf – mit freiem Blick auf Hahnen, Spannörter und die Engelberger Bergwelt.</p>
+  </div>
+  <a class="down" href="#wohnung" aria-label="Nach unten">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+  </a>
+</div>
+
+<!-- Wohnung -->
+<section id="wohnung">
+  <div class="wrap">
+    <div class="two">
+      <div class="txt reveal">
+        <p class="kicker">Die Wohnung</p>
+        <h2>Wohnen über den Dächern von Engelberg</h2>
+        <p>An ruhiger, erhöhter Lage am Sonnenhang gelegen, öffnet sich die neu erbaute Wohnung
+        über raumhohe Fensterfronten zum Tal: Vom Wohnraum, der Loggia und der grossen Terrasse
+        reicht der Blick über das Dorf und das Kloster bis zu Hahnen, Spannörtern und den
+        vergletscherten Gipfeln am Talschluss.</p>
+        <p>Die Maisonette ist über zwei Ebenen angelegt. Auf der Wohnebene verbinden sich Küche,
+        Ess- und Wohnbereich zu einem offenen, lichtdurchfluteten Raum mit gedeckter Loggia.
+        Eine Treppe führt zur Schlafebene mit Schlafzimmer, Bad, Sauna und eigenem Aussenplatz.</p>
+        <p>Der Ausbau ist ruhig und hochwertig gehalten – Eichenholz, Naturstein und warme
+        Erdtöne nehmen die Farben der umliegenden Berge auf.</p>
+      </div>
+      <div class="reveal">
+        <div class="frame"><img src="images/large/img-18.jpg" alt="Wohnbereich mit Blick zur Loggia" loading="lazy"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Facts -->
+<section class="facts">
+  <div class="wrap">
+    <p class="kicker reveal">Auf einen Blick</p>
+    <h2 class="reveal">Eckdaten</h2>
+    <div class="facts-grid">
+      <div class="fact reveal">
+        <svg viewBox="0 0 24 24"><path d="M4 20h4v-4h4v-4h4V8h4V4"/></svg>
+        <h3>Maisonette</h3><p>Wohnen über zwei Ebenen</p>
+      </div>
+      <div class="fact reveal">
+        <svg viewBox="0 0 24 24"><path d="M3 18v-6a2 2 0 012-2h14a2 2 0 012 2v6"/><path d="M3 18h18"/><path d="M5 10V7a2 2 0 012-2h10a2 2 0 012 2v3"/></svg>
+        <h3>Schlafzimmer</h3><p>mit Bergblick</p>
+      </div>
+      <div class="fact reveal">
+        <svg viewBox="0 0 24 24"><path d="M8 5a3 3 0 016 0v1"/><path d="M12 6v3"/><path d="M7 12h10"/><path d="M9 15v2M12 15v3M15 15v2"/></svg>
+        <h3>Bad</h3><p>mit Badewanne</p>
+      </div>
+      <div class="fact reveal">
+        <svg viewBox="0 0 24 24"><path d="M5 19c0-3 2-4 2-7s-2-4-2-7"/><path d="M11 19c0-3 2-4 2-7s-2-4-2-7"/><path d="M17 19c0-3 2-4 2-7s-2-4-2-7"/></svg>
+        <h3>Sauna</h3><p>auf der Schlafebene</p>
+      </div>
+      <div class="fact reveal">
+        <svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M9.5 10l2.5-3 2.5 3M9.5 14l2.5 3 2.5-3"/></svg>
+        <h3>Lift</h3><p>direkter Zugang</p>
+      </div>
+      <div class="fact reveal">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 17V7h4a3 3 0 010 6H9"/></svg>
+        <h3>Parkplatz</h3><p>in der Einstellhalle</p>
+      </div>
+      <div class="fact reveal">
+        <svg viewBox="0 0 24 24"><path d="M3 20l12-14 2 2-10 12"/><path d="M14 20l6-8"/><path d="M3 20h18"/></svg>
+        <h3>Keller &amp; Skiraum</h3><p>direkt im Haus</p>
+      </div>
+      <div class="fact reveal">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg>
+        <h3>Terrasse &amp; Loggia</h3><p>Aussenplätze auf beiden Ebenen</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Galerie -->
+<section id="galerie">
+  <div class="wrap">
+    <p class="kicker reveal">Einblicke</p>
+    <h2 class="reveal">Galerie</h2>
+    <p class="lead reveal">Ein Rundgang in Bildern – klicke auf ein Foto für die grosse Ansicht.</p>
+    <div class="masonry" id="masonry"></div>
+  </div>
+</section>
+
+<!-- Video -->
+<section class="video" id="rundgang">
+  <div class="wrap">
+    <div class="two">
+      <div class="txt reveal">
+        <p class="kicker">Bewegte Bilder</p>
+        <h2>Ein kurzer Rundgang</h2>
+        <p>Ein paar Schritte durch die Wohnebene: vom Essbereich am grossen Tisch vorbei an der
+        offenen Küche in den Wohnraum – draussen ziehen Wald und Berge vorbei.</p>
+      </div>
+      <div class="reveal">
+        <video controls playsinline preload="none" poster="images/tour-poster.jpg">
+          <source src="images/tour.mp4" type="video/mp4">
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Terrasse -->
+<section id="terrasse">
+  <div class="wrap">
+    <p class="kicker reveal">Draussen</p>
+    <h2 class="reveal">Die Terrasse</h2>
+    <p class="lead reveal">Zur Wohnung gehört neu eine grosse, nach Süden und Westen offene Terrasse:
+    Holzdeck und Natursteinmauern, darüber nichts als Berge. Hier wandert die Sonne bis zum Abend
+    durch – mit dem Hahnen als Kulisse und dem Dorf samt Kloster tief unten im Tal.</p>
+    <div class="tgrid">
+      <div class="frame reveal"><img src="images/large/img-51.jpg" alt="Terrasse mit Blick auf den Hahnen" loading="lazy"></div>
+      <div class="frame reveal"><img src="images/large/img-50.jpg" alt="Terrasse mit Abendsonne über dem Dorf" loading="lazy"></div>
+      <div class="frame wide reveal"><img src="images/large/img-54.jpg" alt="Verschneite Terrasse im Winter mit Blick über das Tal" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Quote -->
+<div class="quote">
+  <p class="reveal">«Das Tal wird mir wohl eins der liebsten aus der ganzen Schweiz werden;
+  die wunderlieblichen Wiesen, die vielen Bäche, die Häuser und der Fuss der Gebirge
+  sind über alles schön.»</p>
+  <p class="attr reveal">Felix Mendelssohn Bartholdy, Brief aus Engelberg, 23. August 1831</p>
+</div>
+
+<!-- Umgebung -->
+<section id="umgebung" style="padding-top:0">
+  <div class="wrap">
+    <p class="kicker reveal">Engelberg</p>
+    <h2 class="reveal">Klosterdorf und Bergparadies</h2>
+    <p class="lead reveal">Engelberg liegt auf rund 1'000 m ü. M. in einem sonnigen Hochtal der
+    Zentralschweiz und verbindet ein lebendiges Dorf mit einer der vielseitigsten Bergregionen
+    der Alpen – im Winter wie im Sommer.</p>
+    <div class="banner reveal"><img src="images/large/img-52.jpg" alt="Blick über Engelberg und das Tal im Sommer" loading="lazy"></div>
+    <div class="cards">
+      <div class="card reveal">
+        <h3>Titlis · 3'238 m</h3>
+        <p>Mit dem Rotair, der ersten drehbaren Luftseilbahn der Welt, auf über 3'000 m:
+        Gletschergrotte, Hängebrücke und Schnee das ganze Jahr.</p>
+        <a href="https://www.titlis.ch" target="_blank" rel="noopener">titlis.ch</a>
+      </div>
+      <div class="card reveal">
+        <h3>Brunni – die Sonnenseite</h3>
+        <p>Sesselbahn zur Brunnihütte auf 1'860 m, Kitzelpfad um den Härzlisee und die
+        Klostermatte – das Familienparadies direkt an der Sonne.</p>
+        <a href="https://www.brunni.ch" target="_blank" rel="noopener">brunni.ch</a>
+      </div>
+      <div class="card reveal">
+        <h3>Kloster &amp; Dorf</h3>
+        <p>Das Benediktinerkloster prägt Engelberg seit 1120 – mit Schaukäserei und der
+        grössten Orgel der Schweiz. Im Dorf: Läden, Restaurants, Bäder und Bahnen.</p>
+        <a href="https://kloster-engelberg.ch" target="_blank" rel="noopener">kloster-engelberg.ch</a>
+      </div>
+      <div class="card reveal">
+        <h3>Vier Jahreszeiten</h3>
+        <p>82 Pistenkilometer und legendäre Freeride-Abfahrten im Winter – die längste führt
+        über 2'000 Höhenmeter ins Tal. Im Sommer: Wandern, Biken, Golf und Bergseen.</p>
+        <a href="https://www.engelberg.ch" target="_blank" rel="noopener">engelberg.ch</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Anreise -->
+<section class="travel" id="anreise">
+  <div class="wrap">
+    <p class="kicker reveal">Unterwegs</p>
+    <h2 class="reveal">Anreise</h2>
+    <div class="travel-grid">
+      <div class="card reveal">
+        <h3>Mit der Bahn</h3>
+        <p>Der Luzern–Engelberg Express der Zentralbahn verbindet Luzern stündlich in
+        43 Minuten mit Engelberg – die letzte Etappe führt als Zahnradstrecke ins Hochtal.</p>
+        <a href="https://www.sbb.ch/de/kaufen/pages/fahrplan/fahrplan.xhtml?nach=Engelberg" target="_blank" rel="noopener">Fahrplan</a>
+      </div>
+      <div class="card reveal">
+        <h3>Mit dem Auto</h3>
+        <p>Autobahn A2 bis Stans-Süd, anschliessend führt die Strasse in rund 20 Minuten das
+        Engelbergertal hinauf. Ab Luzern etwa 40 Minuten, ab Zürich gut 1¼ Stunden.</p>
+        <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Engelberg" target="_blank" rel="noopener">Route planen</a>
+      </div>
+      <div class="card reveal">
+        <h3>Aktuell</h3>
+        <p>Wetter, Webcams und Panoramakarten für das ganze Tal – ein Blick lohnt sich vor
+        jedem Besuch, auf über 1'000 Metern ist das Bergwetter eigenwillig.</p>
+        <a href="https://www.engelberg.ch/webcams/" target="_blank" rel="noopener">Webcams</a> &nbsp;·&nbsp;
+        <a href="https://meteo.search.ch/engelberg.de.html" target="_blank" rel="noopener">Wetter</a>
+      </div>
+    </div>
+    <div class="map reveal">
+      <iframe title="Karte von Engelberg" src="https://www.google.com/maps?q=Engelberg,+Schweiz&amp;z=13&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p class="peak">Pearl of Engelberg</p>
+</footer>
+
+<!-- Lightbox -->
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Bildansicht">
+  <button class="close" aria-label="Schliessen"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <button class="prev" aria-label="Vorheriges Bild"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <img id="lbimg" src="" alt="">
+  <button class="next" aria-label="Nächstes Bild"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+  <div class="cap" id="lbcap"></div>
+</div>
+
+<script>
+// ---- Galerie ----
+const photos = [
+  [16,'Wohnen'],[43,'Treppe zur Schlafebene'],[19,'Essbereich'],[22,'Küche'],
+  [24,'Schlafzimmer'],[18,'Wohnbereich'],[33,'Bad'],[2,'Loggia'],
+  [3,'Wohnen & Essen'],[31,'Sauna'],[11,'Küche'],[21,'Wohnzimmer'],
+  [25,'Schlafzimmer'],[30,'Zimmer auf der Schlafebene'],[36,'Bad'],[4,'Wohnzimmer'],
+  [20,'Essbereich'],[14,'Garderobe'],[5,'Wohnen & Essen'],[26,'Schlafzimmer'],
+  [32,'Vor dem Haus'],[15,'Am Esstisch'],[42,'Detail'],[29,'Detail'],
+  [13,'Detail'],[39,'Detail'],[27,'Detail'],[12,'Detail'],
+  [10,'Blick über Engelberg'],[53,'Der Gross Spannort im Winter']
+];
+const masonry = document.getElementById('masonry');
+photos.forEach(([n,cap],i)=>{
+  const id = String(n).padStart(2,'0');
+  const fig = document.createElement('figure');
+  fig.innerHTML = `<img src="images/thumb/img-${id}.jpg" alt="${cap}" loading="lazy">`+
+                  `<figcaption>${cap}</figcaption>`;
+  fig.addEventListener('click',()=>openLb(i));
+  masonry.appendChild(fig);
+});
+
+// ---- Lightbox ----
+const lb = document.getElementById('lb'), lbimg = document.getElementById('lbimg'), lbcap = document.getElementById('lbcap');
+let cur = 0;
+function openLb(i){cur=i;show();lb.classList.add('open');document.body.style.overflow='hidden'}
+function closeLb(){lb.classList.remove('open');document.body.style.overflow=''}
+function show(){
+  const [n,cap]=photos[cur], id=String(n).padStart(2,'0');
+  lbimg.src=`images/large/img-${id}.jpg`; lbimg.alt=cap;
+  lbcap.textContent=`${cap} · ${cur+1}/${photos.length}`;
+}
+function step(d){cur=(cur+d+photos.length)%photos.length;show()}
+lb.querySelector('.close').addEventListener('click',closeLb);
+lb.querySelector('.prev').addEventListener('click',e=>{e.stopPropagation();step(-1)});
+lb.querySelector('.next').addEventListener('click',e=>{e.stopPropagation();step(1)});
+lb.addEventListener('click',e=>{if(e.target===lb)closeLb()});
+document.addEventListener('keydown',e=>{
+  if(!lb.classList.contains('open'))return;
+  if(e.key==='Escape')closeLb();
+  if(e.key==='ArrowLeft')step(-1);
+  if(e.key==='ArrowRight')step(1);
+});
+let tx=null;
+lb.addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+lb.addEventListener('touchend',e=>{
+  if(tx===null)return;
+  const dx=e.changedTouches[0].clientX-tx;
+  if(Math.abs(dx)>50)step(dx<0?1:-1);
+  tx=null;
+},{passive:true});
+
+// ---- Header ----
+const header = document.querySelector('header');
+addEventListener('scroll',()=>header.classList.toggle('solid',scrollY>40),{passive:true});
+
+// ---- Reveal ----
+const io = new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}
+}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Engelberg</title>
-<meta name="description" content="Private Maisonette-Wohnung in Engelberg – Zentralschweiz.">
+<title>draw.io Engelberg</title>
+<meta name="description" content="draw.io Engelberg – Maisonette über den Dächern von Engelberg OW: Loggia, Terrasse und freier Blick auf die Engelberger Bergwelt.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2322211f'/%3E%3Cpath d='M12 44 L26 20 L34 33 L40 24 L52 44 Z' fill='%23faf8f5'/%3E%3Ccircle cx='45' cy='16' r='4' fill='%23c8a36a'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,7 +45,7 @@ nav.links a:hover{opacity:1;text-decoration:none}
 .hero img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 42%}
 .hero .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,18,15,.35) 0%,rgba(20,18,15,0) 35%,rgba(20,18,15,.55) 100%)}
 .hero .inner{position:relative;width:100%;max-width:1200px;margin:0 auto;padding:0 24px 9vh}
-.hero .kicker{font-size:.8rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.hero .kicker{font-size:.8rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;text-shadow:0 1px 10px rgba(0,0,0,.45)}
 .hero h1{font-size:clamp(2.6rem,7vw,5rem);font-weight:300;text-shadow:0 2px 24px rgba(0,0,0,.35)}
 .hero p.sub{margin-top:14px;font-size:clamp(1rem,2vw,1.2rem);max-width:34em;color:#f2ede6;text-shadow:0 1px 12px rgba(0,0,0,.45)}
 .hero .down{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);opacity:.8}
@@ -57,6 +57,7 @@ section{padding:96px 0}
 .kicker{font-size:.78rem;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
 h2{font-size:clamp(1.9rem,4vw,2.7rem);margin-bottom:22px}
 .lead{font-size:1.08rem;max-width:44em;color:#3d3a35}
+.lead+.lead{margin-top:14px}
 .two{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
 .two .txt p+p{margin-top:16px}
 .frame{border-radius:10px;overflow:hidden;box-shadow:0 18px 50px rgba(34,33,31,.16)}
@@ -68,6 +69,7 @@ h2{font-size:clamp(1.9rem,4vw,2.7rem);margin-bottom:22px}
 .fact svg{width:34px;height:34px;margin:0 auto 12px;stroke:var(--accent);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 .fact h3{font-size:1.02rem;margin-bottom:4px}
 .fact p{font-size:.86rem;color:var(--muted)}
+.also{margin-top:28px;font-size:.95rem;color:#55514a;max-width:52em}
 
 /* Gallery */
 .masonry{columns:3 300px;column-gap:14px;margin-top:44px}
@@ -98,19 +100,15 @@ h2{font-size:clamp(1.9rem,4vw,2.7rem);margin-bottom:22px}
 .video p{color:#c9c2b6}
 .video p+p{margin-top:16px}
 
-/* Terrasse */
-.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:44px}
-.tgrid .wide{grid-column:1/-1}
-@media (max-width:700px){.tgrid{grid-template-columns:1fr}}
-
 /* Quote */
 .quote{padding:110px 24px;text-align:center;background:linear-gradient(180deg,#f1ede6,#faf8f5)}
-.quote p{font-family:'Fraunces',serif;font-style:italic;font-weight:300;font-size:clamp(1.4rem,3vw,2rem);max-width:26em;margin:0 auto;color:#4a463f}
+.quote p{font-family:'Fraunces',serif;font-style:italic;font-weight:300;font-size:clamp(1.4rem,3vw,2rem);max-width:26em;margin:0 auto;color:#4a463f;text-wrap:balance}
 .quote p.attr{font-family:'Inter',sans-serif;font-style:normal;font-size:.85rem;letter-spacing:.12em;color:var(--muted);margin-top:18px}
 
 /* Surroundings */
-.banner{margin:44px 0 0;position:relative;border-radius:10px;overflow:hidden}
-.banner img{width:100%;height:min(62vh,560px);object-fit:cover}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:44px 0 0}
+.duo img{width:100%;height:100%;object-fit:cover}
+@media (max-width:700px){.duo{grid-template-columns:1fr}}
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:14px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:26px 22px;display:flex;flex-direction:column}
 .card h3{font-size:1.15rem;margin-bottom:10px}
@@ -124,6 +122,7 @@ h2{font-size:clamp(1.9rem,4vw,2.7rem);margin-bottom:22px}
 .travel .card p{font-size:.9rem}
 .map{margin-top:44px;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
 .map iframe{display:block;width:100%;height:420px;border:0;filter:saturate(.85)}
+.aside{margin-top:14px;font-size:.85rem;color:var(--muted);text-align:center}
 
 /* Footer */
 footer{padding:48px 24px;text-align:center;color:var(--muted);font-size:.85rem}
@@ -149,18 +148,44 @@ footer .peak{font-family:'Fraunces',serif;font-size:1.05rem;color:var(--ink);mar
   .facts-grid{gap:10px}
   .fact{padding:20px 12px}
 }
+
+/* Druck */
+@media print{
+  @page{margin:12mm}
+  html{scroll-behavior:auto}
+  body{background:#fff}
+  header,.hero .shade,.hero .down,#rundgang,.map,.aside,.lb{display:none!important}
+  .reveal{opacity:1!important;transform:none!important;transition:none!important}
+  .hero{display:block;min-height:0;color:var(--ink)}
+  .hero img.bg{position:static;width:100%;height:75mm;object-fit:cover}
+  .hero .inner{padding:8mm 0 0}
+  .hero .kicker{color:var(--accent)}
+  .hero h1{font-size:26pt;text-shadow:none}
+  .hero p.sub{color:#3d3a35;text-shadow:none}
+  section{padding:9mm 0}
+  #standort,#infrastruktur,#galerie,#umgebung,#anreise{break-before:page}
+  .quote{break-inside:avoid}
+  .facts,.travel{background:none;border:none}
+  .quote{background:none;padding:8mm 24px}
+  .frame,.card,.fact,.masonry figure{box-shadow:none;break-inside:avoid}
+  .two,.duo,.cards,.travel-grid{break-inside:avoid}
+  .masonry{columns:2 auto;column-gap:10px}
+  .masonry figcaption{display:none}
+  a{color:inherit}
+  .card a{color:var(--accent)}
+}
 </style>
 </head>
 <body>
 
 <header id="top">
   <div class="nav">
-    <a class="brand" href="#top">Engelberg</a>
+    <a class="brand" href="#top">draw.io Engelberg</a>
     <nav class="links">
-      <a href="#wohnung">Wohnung</a>
+      <a href="#standort">Maisonette</a>
+      <a href="#infrastruktur">Ausstattung</a>
       <a href="#galerie">Galerie</a>
       <a href="#rundgang">Rundgang</a>
-      <a href="#terrasse">Terrasse</a>
       <a href="#umgebung">Umgebung</a>
       <a href="#anreise">Anreise</a>
     </nav>
@@ -173,76 +198,80 @@ footer .peak{font-family:'Fraunces',serif;font-size:1.05rem;color:var(--ink);mar
   <div class="shade"></div>
   <div class="inner">
     <p class="kicker">Zentralschweiz &middot; 1'100 m ü. M.</p>
-    <h1>Engelberg</h1>
-    <p class="sub">Eine Maisonette-Wohnung über dem Dorf – mit freiem Blick auf Hahnen, Spannörter und die Engelberger Bergwelt.</p>
+    <h1>draw.io Engelberg</h1>
+    <p class="sub">Eine kleine, moderne Maisonette an der Sonnenseite über dem Dorf –
+    ein ruhiger Rückzugsort mit freiem Blick auf Hahnen, Spannörter und Titlis.</p>
   </div>
-  <a class="down" href="#wohnung" aria-label="Nach unten">
+  <a class="down" href="#standort" aria-label="Nach unten">
     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
   </a>
 </div>
 
-<!-- Wohnung -->
-<section id="wohnung">
+<!-- Standort -->
+<section id="standort">
   <div class="wrap">
     <div class="two">
       <div class="txt reveal">
-        <p class="kicker">Die Wohnung</p>
-        <h2>Wohnen über den Dächern von Engelberg</h2>
-        <p>An ruhiger, erhöhter Lage am Sonnenhang gelegen, öffnet sich die neu erbaute Wohnung
-        über raumhohe Fensterfronten zum Tal: Vom Wohnraum, der Loggia und der Terrasse reicht
-        der Blick über das Dorf und das Kloster zu Hahnen, Spannörtern und Titlis – mit der
-        legendären Freeride-Flanke «Laub» und der Weltcup-Sprungschanze direkt gegenüber auf
-        der anderen Talseite.</p>
-        <p>Die Maisonette ist über zwei Ebenen angelegt. Auf der Wohnebene verbinden sich Küche,
-        Ess- und Wohnbereich zu einem offenen, lichtdurchfluteten Raum mit gedeckter Loggia.
-        Eine Treppe führt zur Schlafebene mit Schlafzimmer, Büro, Bad und eigenem Aussenplatz.</p>
+        <p class="kicker">Die Maisonette</p>
+        <h2>Ein Rückzugsort über den Dächern von Engelberg</h2>
+        <p>An ruhiger, erhöhter Lage am Sonnenhang gelegen – etwas über dem Dorf, mit
+        Wiesen, Wald und Bergen als Nachbarn – öffnet sich die neu erbaute Maisonette
+        über raumhohe Fensterfronten zum Tal: Vom Wohnraum, der Loggia und der Terrasse
+        reicht der Blick über Dorf und Kloster zu Hahnen, Spannörtern und Titlis.</p>
+        <p>Die Wohnung ist über zwei Ebenen angelegt. Oben verbinden sich Küche, Ess- und
+        Wohnbereich zu einem offenen, lichtdurchfluteten Raum mit grossem Esstisch –
+        davor die gedeckte Loggia und die grosse Terrasse. Unten liegen das Büro, das
+        Schlafzimmer, das Bad und ein eigener Aussenplatz. Stauraum gibt es reichlich –
+        fünf Nebenräume, von der
+        Ankleide über Reduit, Lager- und Technikraum bis zum separaten Kellerabteil.</p>
         <p>Der Ausbau ist ruhig und hochwertig gehalten – Eichenholz, Naturstein und warme
-        Erdtöne nehmen die Farben der umliegenden Berge auf.</p>
+        Erdtöne nehmen die Farben der umliegenden Berge auf. Klein, modern, praktisch –
+        schön gelegen und ruhig.</p>
       </div>
       <div class="reveal">
-        <div class="frame"><img src="images/large/img-18.jpg" alt="Wohnbereich mit Blick zur Loggia" loading="lazy"></div>
+        <div class="frame"><img src="images/large/img-18.jpg" alt="Wohn- und Arbeitsbereich mit Blick zur Loggia" loading="lazy"></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Facts -->
-<section class="facts">
+<!-- Infrastruktur -->
+<section class="facts" id="infrastruktur">
   <div class="wrap">
     <p class="kicker reveal">Auf einen Blick</p>
-    <h2 class="reveal">Eckdaten</h2>
+    <h2 class="reveal">Ausstattung</h2>
     <div class="facts-grid">
       <div class="fact reveal">
         <svg viewBox="0 0 24 24"><path d="M4 20h4v-4h4v-4h4V8h4V4"/></svg>
         <h3>Maisonette</h3><p>Wohnen über zwei Ebenen</p>
       </div>
       <div class="fact reveal">
-        <svg viewBox="0 0 24 24"><path d="M3 18v-6a2 2 0 012-2h14a2 2 0 012 2v6"/><path d="M3 18h18"/><path d="M5 10V7a2 2 0 012-2h10a2 2 0 012 2v3"/></svg>
-        <h3>Schlafzimmer</h3><p>mit Bergblick</p>
+        <svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="3" rx="1"/><path d="M6 11v7M18 11v7M12 11v4"/></svg>
+        <h3>Offenes Wohnen</h3><p>Küche, Ess- und Wohnbereich in einem Raum</p>
       </div>
       <div class="fact reveal">
-        <svg viewBox="0 0 24 24"><path d="M8 5a3 3 0 016 0v1"/><path d="M12 6v3"/><path d="M7 12h10"/><path d="M9 15v2M12 15v3M15 15v2"/></svg>
-        <h3>Bad</h3><p>mit Badewanne</p>
+        <svg viewBox="0 0 24 24"><path d="M3 18v-6a2 2 0 012-2h14a2 2 0 012 2v6"/><path d="M3 18h18"/><path d="M5 10V7a2 2 0 012-2h10a2 2 0 012 2v3"/></svg>
+        <h3>Schlafzimmer</h3><p>Mit Bergblick</p>
+      </div>
+      <div class="fact reveal">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 17V7h4a3 3 0 010 6H9"/></svg>
+        <h3>Einstellhalle</h3><p>Parkplatz und Gästeparkplätze</p>
       </div>
       <div class="fact reveal">
         <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg>
         <h3>Büro</h3><p>Arbeitsplatz mit Sicht in die Berge</p>
       </div>
       <div class="fact reveal">
-        <svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M9.5 10l2.5-3 2.5 3M9.5 14l2.5 3 2.5-3"/></svg>
-        <h3>Lift</h3><p>direkter Zugang</p>
-      </div>
-      <div class="fact reveal">
-        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 17V7h4a3 3 0 010 6H9"/></svg>
-        <h3>Parkplatz</h3><p>in der Einstellhalle</p>
-      </div>
-      <div class="fact reveal">
-        <svg viewBox="0 0 24 24"><path d="M3 20l12-14 2 2-10 12"/><path d="M14 20l6-8"/><path d="M3 20h18"/></svg>
-        <h3>Keller &amp; Skiraum</h3><p>direkt im Haus</p>
-      </div>
-      <div class="fact reveal">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg>
         <h3>Terrasse &amp; Loggia</h3><p>Aussenplätze auf beiden Ebenen</p>
+      </div>
+      <div class="fact reveal">
+        <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M12 3v18"/><path d="M9.5 11v2M14.5 11v2"/></svg>
+        <h3>Stauraum</h3><p>Fünf Nebenräume – Ankleide, Reduit, Lager, Technik und Keller</p>
+      </div>
+      <div class="fact reveal">
+        <svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7"/><path d="M6 9.5V20h12V9.5"/><circle cx="12" cy="14.5" r="1.8"/><path d="M12 16.3V18M12 11v1.7"/></svg>
+        <h3>Smart Home</h3><p>Moderne Haus- und Sicherheitstechnik und schnelles Internet</p>
       </div>
     </div>
   </div>
@@ -265,8 +294,8 @@ footer .peak{font-family:'Fraunces',serif;font-size:1.05rem;color:var(--ink);mar
       <div class="txt reveal">
         <p class="kicker">Bewegte Bilder</p>
         <h2>Ein kurzer Rundgang</h2>
-        <p>Ein paar Schritte durch die Wohnebene: vom Essbereich am grossen Tisch vorbei an der
-        offenen Küche in den Wohnraum – draussen ziehen Wald und Berge vorbei.</p>
+        <p>Ein paar Schritte durch die obere Ebene: vom grossen Tisch vorbei an der
+        offenen Küche in den Wohnbereich – draussen ziehen Wald und Berge vorbei.</p>
       </div>
       <div class="reveal">
         <video controls playsinline preload="none" poster="images/tour-poster.jpg">
@@ -278,39 +307,31 @@ footer .peak{font-family:'Fraunces',serif;font-size:1.05rem;color:var(--ink);mar
   </div>
 </section>
 
-<!-- Terrasse -->
-<section id="terrasse">
-  <div class="wrap">
-    <p class="kicker reveal">Draussen</p>
-    <h2 class="reveal">Die Terrasse</h2>
-    <p class="lead reveal">Zur Wohnung gehört eine sonnige Terrasse: Holzdeck, Natursteinmauern
-    und eine Sitzbank aus Stein – mit spektakulärer Aussicht auf die umliegenden Berge und
-    das Dorf samt Kloster.</p>
-    <div class="tgrid">
-      <div class="frame reveal"><img src="images/large/img-51.jpg" alt="Terrasse mit Blick auf den Hahnen" loading="lazy"></div>
-      <div class="frame reveal"><img src="images/large/img-50.jpg" alt="Terrasse mit Blick über das Dorf" loading="lazy"></div>
-      <div class="frame wide reveal"><img src="images/large/img-54.jpg" alt="Verschneite Terrasse im Winter mit Blick über das Tal" loading="lazy"></div>
-    </div>
-  </div>
-</section>
-
 <!-- Quote -->
 <div class="quote">
   <p class="reveal">«Das Tal wird mir wohl eins der liebsten aus der ganzen Schweiz werden;
   die wunderlieblichen Wiesen, die vielen Bäche, die Häuser und der Fuss der Gebirge
-  sind über alles schön.»</p>
-  <p class="attr reveal">Felix Mendelssohn Bartholdy, Brief aus Engelberg, 23. August 1831</p>
+  sind über alles&nbsp;schön.»</p>
+  <p class="attr reveal">Felix Mendelssohn Bartholdy, Brief&nbsp;aus&nbsp;Engelberg, 23. August 1831</p>
 </div>
 
 <!-- Umgebung -->
 <section id="umgebung" style="padding-top:0">
   <div class="wrap">
     <p class="kicker reveal">Engelberg</p>
-    <h2 class="reveal">Klosterdorf und Bergparadies</h2>
-    <p class="lead reveal">Engelberg liegt auf rund 1'000 m ü. M. in einem sonnigen Hochtal der
-    Zentralschweiz und verbindet ein lebendiges Dorf mit einer der vielseitigsten Bergregionen
-    der Alpen – im Winter wie im Sommer.</p>
-    <div class="banner reveal"><img src="images/large/img-52.jpg" alt="Blick über Engelberg und das Tal im Sommer" loading="lazy"></div>
+    <h2 class="reveal">Klosterdorf am Ende des Tals</h2>
+    <p class="lead reveal">Engelberg liegt auf rund 1'000 m ü. M. auf einer sonnigen
+    Hochebene am Ende des Tals – die Strasse führt hierher und nicht weiter,
+    Durchgangsverkehr gibt es keinen. Ringsum schützen die Berge, die Luft ist frisch,
+    und selbst im Hochsommer bleibt es angenehm kühl. Die Ruhe hat Tradition: Schon um
+    1120 zog sich ein Zürcher genau deshalb hierher zurück – und gründete das Kloster.</p>
+    <p class="lead reveal">Dabei fehlt es an nichts: Läden, Restaurants, Bahnhof und die
+    ganze Infrastruktur liegen unten im Dorf. Die Wohnung selbst hält Abstand – an der
+    Sonnenseite über dem Dorf, weit weg von Sportanlagen, Bergbahnen und Touristenströmen.</p>
+    <div class="duo">
+      <div class="frame reveal"><img src="images/large/img-52.jpg" alt="Blick über Engelberg und das Tal im Sommer" loading="lazy"></div>
+      <div class="frame reveal"><img src="images/large/img-53.jpg" alt="Der Gross Spannort im Winter" loading="lazy"></div>
+    </div>
     <div class="cards">
       <div class="card reveal">
         <h3>Titlis · 3'238 m</h3>
@@ -326,8 +347,8 @@ footer .peak{font-family:'Fraunces',serif;font-size:1.05rem;color:var(--ink);mar
       </div>
       <div class="card reveal">
         <h3>Kloster &amp; Dorf</h3>
-        <p>Das Benediktinerkloster prägt Engelberg seit 1120 – mit Schaukäserei und der
-        grössten Orgel der Schweiz. Im Dorf: Läden, Restaurants, Bäder und Bahnen.</p>
+        <p>Vom Zürcher Konrad von Sellenbüren gegründet, prägt das Benediktinerkloster
+        das Tal seit 1120 – mit Schaukäserei und der grössten Orgel der Schweiz.</p>
         <a href="https://kloster-engelberg.ch" target="_blank" rel="noopener">kloster-engelberg.ch</a>
       </div>
       <div class="card reveal">
@@ -343,37 +364,42 @@ footer .peak{font-family:'Fraunces',serif;font-size:1.05rem;color:var(--ink);mar
 <!-- Anreise -->
 <section class="travel" id="anreise">
   <div class="wrap">
-    <p class="kicker reveal">Unterwegs</p>
+    <p class="kicker reveal">Erreichbarkeit</p>
     <h2 class="reveal">Anreise</h2>
     <div class="travel-grid">
       <div class="card reveal">
         <h3>Mit der Bahn</h3>
         <p>Der Luzern–Engelberg Express der Zentralbahn verbindet Luzern stündlich in
-        43 Minuten mit Engelberg – die letzte Etappe führt als Zahnradstrecke ins Hochtal.</p>
+        43 Minuten mit Engelberg – ab Zürich via Luzern rund 1½ Stunden.</p>
         <a href="https://www.sbb.ch/de/kaufen/pages/fahrplan/fahrplan.xhtml?nach=Engelberg" target="_blank" rel="noopener">Fahrplan</a>
       </div>
       <div class="card reveal">
         <h3>Mit dem Auto</h3>
-        <p>Autobahn A2 bis Stans-Süd, anschliessend führt die Strasse in rund 20 Minuten das
-        Engelbergertal hinauf. Ab Luzern etwa 40 Minuten, ab Zürich gut 1¼ Stunden.</p>
+        <p>Autobahn A2 bis Stans-Süd, anschliessend rund 20 Minuten das Engelbergertal
+        hinauf. Ab Luzern etwa 40 Minuten, ab Zug knapp eine Stunde, ab Zürich rund
+        1½ Stunden.</p>
         <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Engelberg" target="_blank" rel="noopener">Route planen</a>
       </div>
       <div class="card reveal">
-        <h3>Aktuell</h3>
-        <p>Wetter, Webcams und Panoramakarten für das ganze Tal – ein Blick lohnt sich vor
-        jedem Besuch, auf über 1'000 Metern ist das Bergwetter eigenwillig.</p>
-        <a href="https://www.engelberg.ch/webcams/" target="_blank" rel="noopener">Webcams</a> &nbsp;·&nbsp;
-        <a href="https://meteo.search.ch/engelberg.de.html" target="_blank" rel="noopener">Wetter</a>
+        <h3>Ab Flughafen Zürich</h3>
+        <p>Der Flughafen Zürich liegt rund 1½ Autostunden entfernt; mit der Bahn geht es
+        via Luzern in gut 2 Stunden nach Engelberg.</p>
+        <a href="https://www.flughafen-zuerich.ch" target="_blank" rel="noopener">flughafen-zuerich.ch</a>
       </div>
     </div>
     <div class="map reveal">
       <iframe title="Karte von Engelberg" src="https://www.google.com/maps?q=Engelberg,+Schweiz&amp;z=13&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
     </div>
+    <p class="aside">Aktuell im Tal:
+      <a href="https://www.engelberg.ch/webcams/" target="_blank" rel="noopener">Webcams</a> &nbsp;·&nbsp;
+      <a href="https://meteo.search.ch/engelberg.de.html" target="_blank" rel="noopener">Wetter</a>
+    </p>
   </div>
 </section>
 
 <footer>
-  <p class="peak">Engelberg</p>
+  <p class="peak">draw.io Engelberg</p>
+  <p>Engelberg, Kanton Obwalden</p>
 </footer>
 
 <!-- Lightbox -->
@@ -388,14 +414,14 @@ footer .peak{font-family:'Fraunces',serif;font-size:1.05rem;color:var(--ink);mar
 <script>
 // ---- Galerie ----
 const photos = [
-  [16,'Wohnen'],[43,'Treppe zur Schlafebene'],[19,'Essbereich'],[22,'Küche'],
+  [16,'Wohnen'],[30,'Büro'],[19,'Essbereich'],[22,'Küche'],
   [24,'Schlafzimmer'],[18,'Wohnbereich'],[33,'Bad'],[2,'Loggia'],
-  [3,'Wohnen & Essen'],[11,'Küche'],[21,'Wohnzimmer'],
-  [25,'Schlafzimmer'],[30,'Büro'],[36,'Bad'],[4,'Wohnzimmer'],
+  [50,'Terrasse'],[3,'Wohnen & Essen'],[11,'Küche'],[43,'Treppe zwischen den Ebenen'],
+  [25,'Schlafzimmer'],[21,'Wohnzimmer'],[36,'Bad'],[4,'Wohnzimmer'],
   [20,'Essbereich'],[14,'Garderobe'],[5,'Wohnen & Essen'],[26,'Schlafzimmer'],
-  [32,'Vor dem Haus'],[15,'Am Esstisch'],[42,'Detail'],[29,'Detail'],
+  [32,'Vor dem Haus'],[15,'Am grossen Tisch'],[42,'Detail'],[29,'Detail'],
   [13,'Detail'],[39,'Detail'],[27,'Detail'],[12,'Detail'],
-  [10,'Blick über Engelberg'],[53,'Der Gross Spannort im Winter']
+  [54,'Terrasse im Winter'],[10,'Blick über Engelberg']
 ];
 const masonry = document.getElementById('masonry');
 photos.forEach(([n,cap],i)=>{
@@ -446,6 +472,11 @@ const io = new IntersectionObserver(es=>es.forEach(e=>{
   if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}
 }),{threshold:.12});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// ---- Druck: alle Bilder laden ----
+const eagerAll = ()=>document.querySelectorAll('img[loading="lazy"]').forEach(img=>img.loading='eager');
+addEventListener('load',()=>setTimeout(eagerAll,2000));
+addEventListener('beforeprint',eagerAll);
 </script>
 </body>
 </html>

@@ -1,128 +1,146 @@
 # scripts
 
 Command-line Node tooling for this repo, kept separate from the static HTML
-site at the repo root. Nothing here is published by GitHub Pages — these are
-run locally from your machine.
+site at the repo root. These are run locally from your machine. Note that
+GitHub Pages still serves them as plain files (e.g.
+`https://www.alderg.com/scripts/slack-logbuch.mjs`), so never put secrets or
+generated data in here.
 
 ## slack-logbuch
 
-Fetches Slack access logs for one user via the
+Fetches one user's Slack access log for a year via the
 [`team.accessLogs`](https://docs.slack.dev/reference/methods/team.accessLogs/)
-admin API and reports the number of workdays that user logged in from a given
-IP range. It is the headless equivalent of `../slack.html`: same IP
-include/exclude rules, same day counting, same report table — but it pulls the
-data directly from Slack instead of a pasted CSV, so the admin token never
-leaves your machine.
+admin API and writes:
+
+- `slack-access-logs-<year>.csv` — the raw data, in the same format as the CSV
+  export at `https://my.slack.com/account/logs` (which only returns the first
+  page since 2026).
+- `<yyyymmdd>-Logbuch-<code>-<year>.pdf` — the report of `../slack.html`, printed
+  like its *Print Report* button (A4, no browser header/footer).
+
+The report is built from the CSV text with the same code as `slack.html`, so
+you can also run it on an old CSV export with `--csv`.
+
+### Quick start
+
+With the token in the Keychain (see below), this fetches the current year and
+prints the summary line:
+
+```bash
+~/Developer/alderg.github.io/scripts/slack-logbuch.mjs
+```
+
+Every run writes both files into `reports/` in the current folder, e.g. for
+2026:
+
+- `reports/slack-access-logs-2026.csv` — the raw access log (the CSV)
+- `reports/<today>-Logbuch-<code>-2026.pdf` — the report
+
+For another year, add it: `slack-logbuch.mjs 2025`. For another folder, add
+`--out <folder>`.
 
 ### Requirements
 
 - **Node 18+** (uses the global `fetch`).
+- **Google Chrome** (or Chromium/Edge) to print the PDF; pass `--chrome <path>`
+  if it is not in the default location.
 - A workspace on a **paid plan** (`team.accessLogs` returns `paid_only`
   otherwise).
 - A **Slack user token with the `admin` scope** (`xoxp-...`).
 
 ### Getting the token
 
+The Slack app only needs to be created once; it is listed at
+<https://api.slack.com/apps>. To create it:
+
 1. Go to <https://api.slack.com/apps> → **Create New App** → *From scratch* →
    pick the draw.io workspace.
 2. **OAuth & Permissions** → **User Token Scopes** → add `admin`.
 3. **Install to Workspace** (you must authorize as a Workspace Owner/Admin).
-4. Copy the **User OAuth Token** (`xoxp-...`).
+4. Copy the **User OAuth Token** (`xoxp-...`), not a bot token.
 
-Keep this token out of the repo — pass it on the command line via `--token`.
-(Note: a CLI argument is visible in your shell history and in process listings,
-so treat the token accordingly and rotate it if needed.)
+Keep the token in the macOS Keychain rather than in the repo or your shell
+history:
+
+```bash
+security add-generic-password -a "$USER" -s slack-logbuch -w
+```
 
 ### Usage
 
 ```bash
-# Default full-year report (1.1 – 31.12 of the current year):
-node slack-logbuch.mjs --user U0123456789 --token xoxp-...
+# Current year, token from the Keychain: writes reports/slack-access-logs-2026.csv
+# and reports/<today>-Logbuch-<code>-2026.pdf
+node slack-logbuch.mjs
 
-# Write the report into a folder (filename auto-generated):
-node slack-logbuch.mjs --user U0123456789 --token xoxp-... --out reports
-#   -> reports/Logbuch-Obwalden-2026-01-01_2026-12-31.html
-#   then open it in Chrome and print to PDF
+# Any other year
+node slack-logbuch.mjs 2025
 
-# Explicit range, options and an exact output file:
-node slack-logbuch.mjs --user U0123456789 --token xoxp-... \
-  --from 1.1.2026 --to 31.12.2026 --days 240 \
-  --include "144. 178." --exclude "178.197." --label Obwalden \
-  --out reports/2026.html
+# Report from an existing CSV export (no token needed)
+node slack-logbuch.mjs 2024 --csv slack-access-logs-2024.csv
+
+# Explicit range and filters, as in slack.html
+SLACK_TOKEN=... node slack-logbuch.mjs --from 1.1.2026 --to 30.6.2026 --days 120 \
+  --include "<prefix> <prefix>" --exclude "<prefix>" --label <place> --code <code>
 ```
 
-Output:
+Progress goes to stderr, the summary to stdout:
 
 ```
-Obwalden 3.1.2026 - 19.6.2026: 142 of 240 workdays (59.2%)
+Fetching access logs for U0123456789, 1.1.2025 - 31.12.2025 (Slack allows ~20 requests/min, about 3 minutes per year)
+Fetching [##########----------] 52%  back to 24.6.2025, page 27, 1000 entries, ~1m35s left
+...
+Wrote 2000 entries to reports/slack-access-logs-2025.csv
+Printing PDF...
+Wrote reports/<today>-Logbuch-<code>-2025.pdf
+<place> <first day> - <last day>: <days> of 240 workdays (<percent>%)
 ```
 
-| Flag        | Default                        | Meaning                                              |
-| ----------- | ------------------------------ | ---------------------------------------------------- |
-| `--user`    | *(required)*                   | Slack user ID to report on                           |
-| `--token`   | *(required)*                   | Admin-scoped `xoxp-...` token                         |
-| `--from`    | `1.1.<current year>`           | Start date (inclusive), `d.m.yyyy`                   |
-| `--to`      | `31.12.<current year>`         | End date (inclusive), `d.m.yyyy`                     |
-| `--days`    | `240`                          | Working days in the period (the percentage divisor)  |
-| `--include` | `"144. 178."`                  | Space-separated IP prefixes that count               |
-| `--exclude` | `"178.197."`                   | Space-separated IP prefixes that are excluded        |
-| `--label`   | `Obwalden`                     | Place label in the report                            |
-| `--out`     | *(off)*                        | Write the HTML report to a **file** (`reports/2026.html`) or a **folder** (`reports` → filename auto-generated). Also `--output` / `-o` |
-| `--all-pages` | *(off)*                      | Disable early-stop and page through the entire access-log history (slower; for verification) |
-| `--verbose` | *(off)*                        | Trace config, each API request, and per-entry filtering (to stderr); also `-verbose` / `-v` |
+| Flag          | Default               | Meaning                                                  |
+| ------------- | --------------------- | -------------------------------------------------------- |
+| `YEAR`        | current year          | Year to fetch and report (first positional argument)     |
+| `--csv`       | *(off)*               | Use an existing access log CSV instead of the API        |
+| `--token`     | `$SLACK_TOKEN`, then Keychain item `slack-logbuch` | Admin-scoped `xoxp-...` token |
+| `--user`      | the token's owner     | Slack user ID to report on                               |
+| `--from`      | `1.1.<YEAR>`          | Start date (inclusive), `d.m.yyyy`                       |
+| `--to`        | `31.12.<YEAR>`        | End date (inclusive), `d.m.yyyy`                         |
+| `--days`      | `240`                 | Working days in the period (the percentage divisor)      |
+| `--include`   | as in `slack.html`    | Space-separated IP prefixes that count; empty = all      |
+| `--exclude`   | as in `slack.html`    | Space-separated IP prefixes that are excluded first      |
+| `--label`     | as in `slack.html`    | Place label in the total line                            |
+| `--code`      | built in              | Place code in the PDF filename                           |
+| `--out`       | `reports`             | Output folder (also `-o`)                                |
+| `--html`      | *(off)*               | Write the report as HTML instead of printing the PDF     |
+| `--chrome`    | auto-detected         | Path to Chrome/Chromium/Edge                             |
+| `--tz`        | `Europe/Zurich`       | Time zone for the timestamps and for grouping by day     |
+| `--all-pages` | *(off)*               | Page through the whole log history instead of stopping at `--from` |
+| `--verbose`   | *(off)*               | Trace each API request (to stderr); also `-v`            |
 
-`--out` writes the report as an **HTML file**. It is treated as a **folder** when
-it has a trailing slash, no file extension, or already exists as a directory —
-then the script creates it if needed and writes
-`Logbuch-<label>-<from>_<to>.html` inside it. Otherwise it is treated as an exact
-file path. With `--out` omitted, it just prints the summary line (the number of
-days). To get a PDF, open the HTML in Chrome and print to PDF (Cmd/Ctrl-P → Save
-as PDF) — there is no Slack API that returns a PDF, and the report has to be
-rendered by a browser.
-All trace/progress output goes to **stderr**, so the summary on **stdout** stays
-clean and parseable. Run with `--verbose` to see exactly what is happening:
-
-```
-$ node slack-logbuch.mjs --user U0123456789 --token xoxp-... --verbose
-Configuration:
-  user    = U0123456789
-  from    = 1.1.2026
-  to      = 31.12.2026
-  ...
-Fetching workspace access logs from Slack...
-  POST team.accessLogs?count=1000&page=1&before=1767225600
-Fetched page 1/3 (+1000, 1000 entries so far, oldest 14.8.2026)
-  pausing 3.5s (rate limit)
-  ...
-Page 3 is entirely older than --from; stopping early (pass --all-pages to disable).
-  keep 3.1.2026  ip=144.x.x.x  count=12
-  skip 5.1.2026  ip=178.197.x.x  (ip excluded)
-  ...
-Total entries fetched : 2431
-Entries for user      : 188
-  kept (in range+ip)  : 142
-  distinct valid days : 142
-Obwalden 3.1.2026 - 19.6.2026: 142 of 240 workdays (59.2%)
-```
+With `--from`/`--to`, files are named by date range instead of the year, e.g.
+`slack-access-logs-20260101_20260630.csv`.
 
 ### Notes
 
-- **Day field.** Each log entry is counted on its `date_first`. If your
-  existing reports key off the *last* access instead, change `login.date_first`
-  to `login.date_last` in `slack-logbuch.mjs`.
+- **Same data as the export.** Checked against earlier CSV exports and
+  reports made with `slack.html`: the API returns the same rows and the
+  script produces the same report. The API
+  prefixes some user agents with client tags (`SlackWeb/0 `, `ApiApp/…`),
+  which the export does not show; the script strips them. The export's
+  *User Agent - Simple* column is not in the API and is filled in on a
+  best-effort basis; the report does not use it.
+- **Order within a day.** Entries that share the same second may be listed in
+  a different order than in an old export. Days, logins and IPs are unaffected.
 - **Runtime / rate limits.** `team.accessLogs` has no per-user filter, so the
-  script pages through the **whole workspace's** logs (newest first) and filters
-  client-side. It is Tier 2 (~20 requests/min), so requests are paced ~3.5s
-  apart and automatically back off on HTTP 429 (honoring `Retry-After`).
-  Progress is printed to stderr; a busy workspace can take a few minutes.
-- **Early stop.** The API has only a `before` (upper) bound, not an `after`
-  (lower) one. Since results come newest-first, the script stops paging once it
-  reaches a page entirely older than `--from`, instead of fetching years of
-  history it would only discard. This is safe — an in-window entry always has
-  `date_last >= from`, so a fully-past page means nothing older can still count.
-  Use `--all-pages` to disable this and fetch everything (e.g. to confirm the
-  total matches).
-- **History retention.** Slack only keeps access-log history for a limited
-  window, so a very old `--from` may simply return no data.
-- **Privacy.** Generated reports contain IP addresses. Write them into
-  `reports/` (gitignored) and do not commit them — this repo is public.
+  script pages through the **whole workspace's** logs (newest first) and
+  filters client-side. It is Tier 2 (~20 requests/min), so requests are paced
+  ~3.5s apart and back off on HTTP 429. A year takes about 3 minutes.
+- **Paging.** The API has only a `before` (upper) bound, so the script stops
+  at the first page that is entirely older than `--from`. Classic pagination
+  ends at page 100; if that is reached, it continues with `before` set below
+  the oldest entry seen.
+- **Day field.** Each entry is counted on the local day of its `date_first`
+  (*Date Accessed*), like `slack.html`.
+- **Empty filters.** In `slack.html` an empty *Exclude* field excludes every
+  address. Here an empty `--exclude` excludes nothing.
+- **Privacy.** The CSV and PDF contain IP addresses. `reports/` is gitignored;
+  do not commit them — this repo is public.

@@ -145,6 +145,11 @@ function ymd(date)
 	return date.getFullYear() + pad(date.getMonth() + 1) + pad(date.getDate());
 }
 
+function hms(date)
+{
+	return pad(date.getHours()) + pad(date.getMinutes()) + pad(date.getSeconds());
+}
+
 // ------------------------------------------------------------------ slack.html
 // These functions are copied from slack.html and must stay in sync with it.
 
@@ -388,6 +393,15 @@ function fileSize(file)
 	catch (e)
 	{
 		return 0;
+	}
+}
+
+// Refuses to replace an existing output file unless --force is given.
+function checkOverwrite(file, force)
+{
+	if (!force && fs.existsSync(file))
+	{
+		throw new Error(file + ' already exists (pass --force to overwrite)');
 	}
 }
 
@@ -729,7 +743,7 @@ function usage()
 	console.error('Usage: node slack-logbuch.mjs [YEAR] [--csv <file>] [--token <xoxp-...>] ' +
 		'[--user <ID>] [--from d.m.yyyy] [--to d.m.yyyy] [--days N] ' +
 		'[--include "<prefixes>"] [--exclude "<prefixes>"] [--label <place>] [--code <code>] ' +
-		'[--out <folder>] [--html] [--count-only] [--chrome <path>] [--tz <zone>] [--all-pages] [--verbose]');
+		'[--out <folder>] [--html] [--count-only] [--force] [--chrome <path>] [--tz <zone>] [--all-pages] [--verbose]');
 }
 
 async function main()
@@ -775,11 +789,26 @@ async function main()
 	// --count-only prints the report summary (and fetch progress) without
 	// writing the CSV, PDF or HTML files
 	var countOnly = !!args['count-only'];
+	var force = !!args.force;
 	var period = fullYear ? String(year) : ymd(from) + '_' + ymd(to);
+	// Output files are prefixed with the run's date and time so reruns don't
+	// replace earlier ones; an existing file is only replaced with --force
+	var now = new Date();
+	var stamp = ymd(now) + '-' + hms(now);
+	var csvPath = path.join(outDir, stamp + '-slack-access-logs-' + period + '.csv');
+	var reportPath = path.join(outDir, stamp + '-' + TITLE + '-' + code + '-' + period +
+		(args.html ? '.html' : '.pdf'));
 	var csvText;
 
 	if (!countOnly)
 	{
+		// Checked up front so a clash fails before the slow fetch, not after it
+		if (typeof args.csv !== 'string')
+		{
+			checkOverwrite(csvPath, force);
+		}
+
+		checkOverwrite(reportPath, force);
 		fs.mkdirSync(outDir, { recursive: true });
 	}
 
@@ -816,7 +845,6 @@ async function main()
 		}
 		else
 		{
-			var csvPath = path.join(outDir, 'slack-access-logs-' + period + '.csv');
 			fs.writeFileSync(csvPath, csvText);
 			status('Wrote ' + logins.length + ' entries to ' + csvPath);
 		}
@@ -829,23 +857,21 @@ async function main()
 		throw new Error('No log entries match the date range and IP filters.');
 	}
 
-	var base = path.join(outDir, ymd(new Date()) + '-' + TITLE + '-' + code + '-' + period);
-
 	if (countOnly)
 	{
 		// nothing to write — the summary below is the only output
 	}
 	else if (args.html)
 	{
-		fs.writeFileSync(base + '.html', report.html);
-		status('Wrote ' + base + '.html');
+		fs.writeFileSync(reportPath, report.html);
+		status('Wrote ' + reportPath);
 	}
 	else
 	{
 		status('Printing PDF...');
 		await printPdf(findChrome(typeof args.chrome === 'string' ? args.chrome : null),
-			report.html, base + '.pdf');
-		status('Wrote ' + base + '.pdf');
+			report.html, reportPath);
+		status('Wrote ' + reportPath);
 	}
 
 	console.log(report.summary);

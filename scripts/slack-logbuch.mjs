@@ -729,7 +729,7 @@ function usage()
 	console.error('Usage: node slack-logbuch.mjs [YEAR] [--csv <file>] [--token <xoxp-...>] ' +
 		'[--user <ID>] [--from d.m.yyyy] [--to d.m.yyyy] [--days N] ' +
 		'[--include "<prefixes>"] [--exclude "<prefixes>"] [--label <place>] [--code <code>] ' +
-		'[--out <folder>] [--html] [--chrome <path>] [--tz <zone>] [--all-pages] [--verbose]');
+		'[--out <folder>] [--html] [--count-only] [--chrome <path>] [--tz <zone>] [--all-pages] [--verbose]');
 }
 
 async function main()
@@ -772,9 +772,16 @@ async function main()
 		throw new Error('Invalid --from, --to or --days');
 	}
 
+	// --count-only prints the report summary (and fetch progress) without
+	// writing the CSV, PDF or HTML files
+	var countOnly = !!args['count-only'];
 	var period = fullYear ? String(year) : ymd(from) + '_' + ymd(to);
 	var csvText;
-	fs.mkdirSync(outDir, { recursive: true });
+
+	if (!countOnly)
+	{
+		fs.mkdirSync(outDir, { recursive: true });
+	}
 
 	if (typeof args.csv === 'string')
 	{
@@ -803,9 +810,16 @@ async function main()
 		var logins = await fetchAccessLogs(token, user, fromEpoch, toEpoch, !!args['all-pages']);
 		csvText = toCsv(logins);
 
-		var csvPath = path.join(outDir, 'slack-access-logs-' + period + '.csv');
-		fs.writeFileSync(csvPath, csvText);
-		status('Wrote ' + logins.length + ' entries to ' + csvPath);
+		if (countOnly)
+		{
+			status('Fetched ' + logins.length + ' entries');
+		}
+		else
+		{
+			var csvPath = path.join(outDir, 'slack-access-logs-' + period + '.csv');
+			fs.writeFileSync(csvPath, csvText);
+			status('Wrote ' + logins.length + ' entries to ' + csvPath);
+		}
 	}
 
 	var report = buildReport(csvText, from, to, include, exclude, days, label);
@@ -817,7 +831,11 @@ async function main()
 
 	var base = path.join(outDir, ymd(new Date()) + '-' + TITLE + '-' + code + '-' + period);
 
-	if (args.html)
+	if (countOnly)
+	{
+		// nothing to write — the summary below is the only output
+	}
+	else if (args.html)
 	{
 		fs.writeFileSync(base + '.html', report.html);
 		status('Wrote ' + base + '.html');

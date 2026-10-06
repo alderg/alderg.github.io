@@ -6,7 +6,8 @@
 // The report is built from the CSV text with the same algorithm as slack.html,
 // so a fetched log and an old CSV export (--csv) produce identical reports.
 //
-// Requires: Node 18+ (global fetch), Chrome/Chromium/Edge for the PDF, a
+// Requires: Node 18+ (global fetch), Chrome/Chromium/Edge for the PDF (on macOS
+// chrome-headless-shell from ~/.cache/puppeteer first, see findChrome), a
 // Slack user token with the `admin` scope (xoxp-...) on a paid workspace.
 //
 // Usage:
@@ -369,14 +370,72 @@ function buildReport(csvText, from, to, include, exclude, days, label)
 	};
 }
 
+// Puppeteer-cache browsers on macOS, newest first: chrome-headless-shell (made
+// for one-shot --print-to-pdf; Chrome for Testing 154 never writes the PDF),
+// then Chrome for Testing. Unlike Google Chrome they lack the keychain
+// entitlement, so headless launches cannot add keys to the macOS keychain
+// (thousands of them overload secd). Install with
+// npx @puppeteer/browsers install chrome-headless-shell@stable --path ~/.cache/puppeteer
+function puppeteerBrowserPaths()
+{
+	var root = process.env.PUPPETEER_CACHE_DIR ||
+		path.join(os.homedir(), '.cache', 'puppeteer');
+	var prefix = (process.arch == 'arm64') ? 'mac_arm-' : 'mac-';
+	var suffix = (process.arch == 'arm64') ? '-mac-arm64' : '-mac-x64';
+	var browsers = [
+		['chrome-headless-shell', 'chrome-headless-shell'],
+		['chrome', 'Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing']];
+
+	if (process.platform != 'darwin')
+	{
+		return [];
+	}
+
+	return browsers.flatMap(function (browser)
+	{
+		var names = [];
+
+		try
+		{
+			names = fs.readdirSync(path.join(root, browser[0])).filter(function (name)
+			{
+				return name.indexOf(prefix) == 0;
+			});
+		}
+		catch (e)
+		{
+			// Not in the Puppeteer cache
+		}
+
+		names.sort(function (a, b)
+		{
+			return b.localeCompare(a, undefined, { numeric: true });
+		});
+
+		return names.map(function (name)
+		{
+			return path.join(root, browser[0], name, browser[0] + suffix, browser[1]);
+		});
+	});
+}
+
 function findChrome(explicit)
 {
-	var candidates = explicit ? [explicit] : CHROME_PATHS;
+	var candidates = explicit ? [explicit] :
+		puppeteerBrowserPaths().concat(CHROME_PATHS);
 
 	for (var i = 0; i < candidates.length; i++)
 	{
 		if (fs.existsSync(candidates[i]))
 		{
+			if (/\/Google Chrome(?! for Testing)[^/]*\.app\//.test(candidates[i]))
+			{
+				console.error('WARNING: printing with ' + candidates[i] + '. Every ' +
+					'Google Chrome launch adds keys to its macOS keychain group; install ' +
+					'chrome-headless-shell: npx @puppeteer/browsers install chrome-headless-shell@stable ' +
+					'--path ~/.cache/puppeteer');
+			}
+
 			return candidates[i];
 		}
 	}
@@ -421,7 +480,7 @@ async function printPdf(chrome, html, pdfPath)
 	{
 		fs.writeFileSync(htmlPath, html);
 		child = spawn(chrome, ['--headless=new', '--disable-gpu', '--no-first-run',
-			'--no-default-browser-check', '--no-pdf-header-footer',
+			'--no-default-browser-check', '--no-pdf-header-footer', '--use-mock-keychain',
 			'--user-data-dir=' + path.join(dir, 'profile'),
 			'--print-to-pdf=' + tmpPdf, 'file://' + htmlPath], { stdio: 'ignore' });
 
